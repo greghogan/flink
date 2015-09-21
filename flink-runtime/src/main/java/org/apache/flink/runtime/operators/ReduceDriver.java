@@ -108,7 +108,6 @@ public class ReduceDriver<T> implements PactDriver<ReduceFunction<T>, T> {
 
 		// cache references on the stack
 		final MutableObjectIterator<T> input = this.input;
-		final TypeSerializer<T> serializer = this.serializer;
 		final TypeComparator<T> comparator = this.comparator;
 		
 		final ReduceFunction<T> function = this.taskContext.getStub();
@@ -119,6 +118,8 @@ public class ReduceDriver<T> implements PactDriver<ReduceFunction<T>, T> {
 			// We only need two objects. The user function is expected to return
 			// the first input as the result. The output value is also expected
 			// to have the same key fields as the input elements.
+
+			final TypeSerializer<T> serializer = this.serializer;
 
 			T reuse1 = serializer.createInstance();
 			T reuse2 = serializer.createInstance();
@@ -148,7 +149,7 @@ public class ReduceDriver<T> implements PactDriver<ReduceFunction<T>, T> {
 				}
 			}
 		} else {
-			T value = input.next(serializer.createInstance());
+			T value = input.next();
 
 			// iterate over key groups
 			while (this.running && value != null) {
@@ -156,7 +157,7 @@ public class ReduceDriver<T> implements PactDriver<ReduceFunction<T>, T> {
 				T res = value;
 
 				// iterate within a key group
-				while ((value = input.next(serializer.createInstance())) != null) {
+				while ((value = input.next()) != null) {
 					if (comparator.equalToReference(value)) {
 						// same group, reduce
 						res = function.reduce(res, value);
