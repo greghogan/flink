@@ -74,6 +74,8 @@ public class Client {
 	 * The configuration to use for the client (optimizer, timeouts, ...) and to connect to the
 	 * JobManager.
 	 */
+	private Configuration config;
+
 	/** The optimizer used in the optimization of batch programs */
 	final Optimizer compiler;
 	
@@ -132,6 +134,7 @@ public class Client {
 	 */
 	public Client(Configuration config, int maxSlots) throws IOException {
 
+		this.config = config;
 		this.compiler = new Optimizer(new DataStatistics(), new DefaultCostEstimator(), config);
 		this.maxSlots = maxSlots;
 
@@ -543,16 +546,16 @@ public class Client {
 		return getOptimizedPlan(compiler, prog.getPlan(), parallelism);
 	}
 
-	public static JobGraph getJobGraph(PackagedProgram prog, FlinkPlan optPlan) throws ProgramInvocationException {
+	public JobGraph getJobGraph(PackagedProgram prog, FlinkPlan optPlan) throws ProgramInvocationException {
 		return getJobGraph(optPlan, prog.getAllLibraries());
 	}
 
-	private static JobGraph getJobGraph(FlinkPlan optPlan, List<File> jarFiles) {
+	private JobGraph getJobGraph(FlinkPlan optPlan, List<File> jarFiles) {
 		JobGraph job;
 		if (optPlan instanceof StreamingPlan) {
 			job = ((StreamingPlan) optPlan).getJobGraph();
 		} else {
-			JobGraphGenerator gen = new JobGraphGenerator();
+			JobGraphGenerator gen = new JobGraphGenerator(this.config);
 			job = gen.compileJobGraph((OptimizedPlan) optPlan);
 		}
 
