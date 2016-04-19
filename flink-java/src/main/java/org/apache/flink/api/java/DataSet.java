@@ -387,14 +387,24 @@ public abstract class DataSet<T> {
 	 * @return A long integer that represents the number of elements in the data set.
 	 */
 	public long count() throws Exception {
+		return count(null);
+	}
+
+	/**
+	 * Convenience method to get the count (number of elements) of a DataSet.
+	 *
+	 * @param jobName job name for program execution
+	 * @return A long integer that represents the number of elements in the data set.
+	 */
+	public long count(String jobName) throws Exception {
 		final String id = new AbstractID().toString();
 
 		output(new Utils.CountHelper<T>(id)).name("count()");
 
-		JobExecutionResult res = getExecutionEnvironment().execute();
+		ExecutionEnvironment env = getExecutionEnvironment();
+		JobExecutionResult res = (jobName == null) ? env.execute() : env.execute(jobName);
 		return res.<Long> getAccumulatorResult(id);
 	}
-
 
 	/**
 	 * Convenience method to get the elements of a DataSet as a List.
@@ -403,11 +413,24 @@ public abstract class DataSet<T> {
 	 * @return A List containing the elements of the DataSet
 	 */
 	public List<T> collect() throws Exception {
+		return collect(null);
+	}
+
+	/**
+	 * Convenience method to get the elements of a DataSet as a List.
+	 * As DataSet can contain a lot of data, this method should be used with caution.
+	 *
+	 * @param jobName job name for program execution
+	 * @return A List containing the elements of the DataSet
+	 */
+	public List<T> collect(String jobName) throws Exception {
 		final String id = new AbstractID().toString();
 		final TypeSerializer<T> serializer = getType().createSerializer(getExecutionEnvironment().getConfig());
 		
 		this.output(new Utils.CollectHelper<>(id, serializer)).name("collect()");
-		JobExecutionResult res = getExecutionEnvironment().execute();
+
+		ExecutionEnvironment env = getExecutionEnvironment();
+		JobExecutionResult res = (jobName == null) ? env.execute() : env.execute(jobName);
 
 		ArrayList<byte[]> accResult = res.getAccumulatorResult(id);
 		if (accResult != null) {

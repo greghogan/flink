@@ -516,16 +516,29 @@ class DataSet[T: ClassTag](set: JavaDataSet[T]) {
   }
 
   /**
+    * Convenience method to get the count (number of elements) of a DataSet
+    *
+    * @return A long integer that represents the number of elements in the set
+    * @see org.apache.flink.api.java.Utils.CountHelper
+    */
+  @throws(classOf[Exception])
+  def count(): Long = {
+    count(null)
+  }
+
+  /**
    * Convenience method to get the count (number of elements) of a DataSet
    *
+   * @param jobName job name for program execution
    * @return A long integer that represents the number of elements in the set
    * @see org.apache.flink.api.java.Utils.CountHelper
    */
   @throws(classOf[Exception])
-  def count(): Long = {
+  def count(jobName: String): Long = {
     val id = new AbstractID().toString
     javaSet.output(new CountHelper[T](id))
-    val res = getExecutionEnvironment.execute()
+    val env = getExecutionEnvironment
+    val res = if (jobName == null) env.execute() else env.execute(jobName)
     res.getAccumulatorResult[Long](id)
   }
 

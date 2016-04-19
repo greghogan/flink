@@ -18,21 +18,52 @@
 
 package org.apache.flink.graph.utils;
 
+import org.apache.flink.api.common.JobExecutionResult;
+import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.Utils;
-import org.apache.flink.api.java.Utils.ChecksumHashCode;
-import org.apache.flink.api.java.utils.DataSetUtils;
+import org.apache.flink.graph.Edge;
 import org.apache.flink.graph.Graph;
+import org.apache.flink.graph.Vertex;
+import org.apache.flink.util.AbstractID;
 
 public class GraphUtils {
 
 	/**
-	 * Computes the checksum over the Graph
+	 * Convenience method to get the count (number of elements) of a Graph
+	 * as well as the checksum (sum over element hashes). The vertex and
+	 * edge DataSets are processed in a single job and the resultant counts
+	 * and checksums are merged locally.
 	 *
+	 * @param graph Graph over which to compute the count and checksum
 	 * @return the checksum over the vertices and edges.
 	 */
-	public static Utils.ChecksumHashCode checksumHashCode(Graph graph) throws Exception {
-		ChecksumHashCode checksum = DataSetUtils.checksumHashCode(graph.getVertices());
-		checksum.add(DataSetUtils.checksumHashCode(graph.getEdges()));
+	public static <K,VV,EV> Utils.ChecksumHashCode checksumHashCode(Graph<K,VV,EV> graph) throws Exception {
+		return checksumHashCode(graph, null);
+	}
+
+	/**
+	 * Convenience method to get the count (number of elements) of a Graph
+	 * as well as the checksum (sum over element hashes). The vertex and
+	 * edge DataSets are processed in a single job and the resultant counts
+	 * and checksums are merged locally.
+	 *
+	 * @param graph Graph over which to compute the count and checksum
+	 * @param jobName job name for program execution
+	 * @return the checksum over the vertices and edges.
+	 */
+	public static <K,VV,EV> Utils.ChecksumHashCode checksumHashCode(Graph<K,VV,EV> graph, String jobName) throws Exception {
+		final String verticesId = new AbstractID().toString();
+		graph.getVertices().output(new Utils.ChecksumHashCodeHelper<Vertex<K,VV>>(verticesId)).name("ChecksumHashCode vertices");
+
+		final String edgesId = new AbstractID().toString();
+		graph.getEdges().output(new Utils.ChecksumHashCodeHelper<Edge<K,EV>>(edgesId)).name("ChecksumHashCode edges");
+
+		// compute the checksum over vertices and edges in a single job
+		ExecutionEnvironment env = graph.getContext();
+		JobExecutionResult res = (jobName == null) ? env.execute() : env.execute(jobName);
+
+		Utils.ChecksumHashCode checksum = res.<Utils.ChecksumHashCode>getAccumulatorResult(verticesId);
+		checksum.add(res.<Utils.ChecksumHashCode>getAccumulatorResult(edgesId));
 		return checksum;
 	}
 }

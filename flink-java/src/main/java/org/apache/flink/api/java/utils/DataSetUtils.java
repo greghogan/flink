@@ -30,6 +30,7 @@ import org.apache.flink.api.common.operators.Keys;
 import org.apache.flink.api.common.operators.base.PartitionOperatorBase;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.DataSet;
+import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.Utils;
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.functions.SampleInCoordinator;
@@ -340,17 +341,30 @@ public final class DataSetUtils {
 	 * Convenience method to get the count (number of elements) of a DataSet
 	 * as well as the checksum (sum over element hashes).
 	 *
+	 * @param input DataSet over which to compute the count and checksum
 	 * @return A ChecksumHashCode that represents the count and checksum of elements in the data set.
 	 */
 	public static <T> Utils.ChecksumHashCode checksumHashCode(DataSet<T> input) throws Exception {
+		return checksumHashCode(input, null);
+	}
+
+	/**
+	 * Convenience method to get the count (number of elements) of a DataSet
+	 * as well as the checksum (sum over element hashes).
+	 *
+	 * @param input DataSet over which to compute the count and checksum
+	 * @param jobName job name for program execution
+	 * @return A ChecksumHashCode that represents the count and checksum of elements in the data set.
+	 */
+	public static <T> Utils.ChecksumHashCode checksumHashCode(DataSet<T> input, String jobName) throws Exception {
 		final String id = new AbstractID().toString();
 
 		input.output(new Utils.ChecksumHashCodeHelper<T>(id)).name("ChecksumHashCode");
 
-		JobExecutionResult res = input.getExecutionEnvironment().execute();
+		ExecutionEnvironment env = input.getExecutionEnvironment();
+		JobExecutionResult res = (jobName == null) ? env.execute() : env.execute(jobName);
 		return res.<Utils.ChecksumHashCode> getAccumulatorResult(id);
 	}
-
 
 	// *************************************************************************
 	//     UTIL METHODS

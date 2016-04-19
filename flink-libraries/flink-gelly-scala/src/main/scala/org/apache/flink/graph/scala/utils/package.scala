@@ -19,9 +19,9 @@
 package org.apache.flink.graph.scala
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
-import org.apache.flink.api.java.Utils.ChecksumHashCode
-import org.apache.flink.api.scala._
-import org.apache.flink.api.scala.utils._
+import org.apache.flink.api.java.Utils
+import org.apache.flink.graph.{Edge, Vertex}
+import org.apache.flink.util.AbstractID
 
 import scala.reflect.ClassTag
 
@@ -35,14 +35,41 @@ package object utils {
   TypeInformation : ClassTag](val self: Graph[K, VV, EV]) {
 
     /**
-      * Computes the ChecksumHashCode over the Graph.
+      * Convenience method to get the count (number of elements) of a Graph
+      * as well as the checksum (sum over element hashes). The vertex and
+      * edge DataSets are processed in a single job and the resultant counts
+      * and checksums are merged locally.
       *
       * @return the ChecksumHashCode over the vertices and edges.
       */
     @throws(classOf[Exception])
-    def checksumHashCode(): ChecksumHashCode = {
-      val checksum: ChecksumHashCode = self.getVertices.checksumHashCode()
-      checksum.add(self.getEdges checksumHashCode())
+    def checksumHashCode(): Utils.ChecksumHashCode = {
+      checksumHashCode(null)
+    }
+
+    /**
+      * Convenience method to get the count (number of elements) of a Graph
+      * as well as the checksum (sum over element hashes). The vertex and
+      * edge DataSets are processed in a single job and the resultant counts
+      * and checksums are merged locally.
+      *
+      * @param jobName job name for program execution
+      * @return the ChecksumHashCode over the vertices and edges.
+      */
+    @throws(classOf[Exception])
+    def checksumHashCode(jobName: String): Utils.ChecksumHashCode = {
+      val verticesId = new AbstractID().toString
+      self.getVertices.output(new Utils.ChecksumHashCodeHelper[Vertex[K,VV]](verticesId))
+
+      val edgesId = new AbstractID().toString
+      self.getEdges.output(new Utils.ChecksumHashCodeHelper[Edge[K,EV]](edgesId))
+
+      // compute the checksum over vertices and edges in a single job
+      val env = self.getWrappedGraph.getContext
+      val res = if (jobName == null) env.execute() else env.execute(jobName)
+
+      val checksum = res.getAccumulatorResult[Utils.ChecksumHashCode](verticesId)
+      checksum.add(res.getAccumulatorResult[Utils.ChecksumHashCode](edgesId))
       checksum
     }
   }

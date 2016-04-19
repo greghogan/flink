@@ -195,9 +195,22 @@ package object utils {
       * @see [[org.apache.flink.api.java.Utils.ChecksumHashCodeHelper]]
       */
     def checksumHashCode(): ChecksumHashCode = {
+      checksumHashCode(null)
+    }
+
+    /**
+      * Convenience method to get the count (number of elements) of a DataSet
+      * as well as the checksum (sum over element hashes).
+      *
+      * @param jobName job name for program execution
+      * @return A ChecksumHashCode with the count and checksum of elements in the data set.
+      * @see [[org.apache.flink.api.java.Utils.ChecksumHashCodeHelper]]
+      */
+    def checksumHashCode(jobName: String): ChecksumHashCode = {
       val id = new AbstractID().toString
       self.javaSet.output(new Utils.ChecksumHashCodeHelper[T](id))
-      val res = self.javaSet.getExecutionEnvironment.execute()
+      val env = self.javaSet.getExecutionEnvironment
+      val res = if (jobName == null) env.execute() else env.execute(jobName)
       res.getAccumulatorResult[ChecksumHashCode](id)
     }
   }
