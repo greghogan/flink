@@ -1288,9 +1288,13 @@ public class Graph<K, VV, EV> {
 	@ForwardedFields("f0; f1")
 	private static final class ExtractEdgeIDsMapper<K, EV>
 			implements MapFunction<Edge<K, EV>, Tuple2<K, K>> {
+		Tuple2<K, K> ids = new Tuple2<>();
+
 		@Override
 		public Tuple2<K, K> map(Edge<K, EV> edge) throws Exception {
-			return new Tuple2<K, K>(edge.f0, edge.f1);
+			ids.f0 = edge.f0;
+			ids.f1 = edge.f1;
+			return ids;
 		}
 	}
 

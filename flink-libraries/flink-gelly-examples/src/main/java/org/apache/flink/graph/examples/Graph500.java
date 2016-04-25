@@ -27,6 +27,8 @@ import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.utils.DataSetUtils;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.graph.Graph;
+import org.apache.flink.graph.asm.permute.PermuteGraph;
+import org.apache.flink.graph.asm.permute.PermuteLabelSequence;
 import org.apache.flink.graph.asm.simple.undirected.Simplify;
 import org.apache.flink.graph.generator.RMatGraph;
 import org.apache.flink.graph.generator.random.JDKRandomGeneratorFactory;
@@ -38,8 +40,6 @@ import java.text.NumberFormat;
 
 /**
  * Generate an RMat graph for Graph 500.
- *
- * Note that this does not yet implement permutation of vertex labels or edges.
  *
  * @see <a href="http://www.graph500.org/specifications">Graph 500</a>
  */
@@ -80,8 +80,9 @@ public class Graph500 {
 		}
 
 		DataSet<Tuple2<LongValue,LongValue>> edges = graph
-			.getEdges()
-			.project(0, 1);
+			.run(new PermuteLabelSequence<JDKRandomGenerator, NullValue, NullValue>(new JDKRandomGeneratorFactory(), vertexCount))
+			.run(new PermuteGraph<LongValue, NullValue, NullValue>())
+			.getEdgeIds();
 
 		// Print, hash, or write RMat graph to disk
 		switch (parameters.get("output", "")) {
