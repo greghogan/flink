@@ -59,7 +59,7 @@ public final class QuickSort implements IndexedSorter {
 	private static void sortInternal(final IndexedSortable s, int p, int r, int depth) {
 		while (true) {
 			if (r - p < 13) {
-				for (int i = p; i < r; ++i) {
+				for (int i = p + 1; i < r; ++i) {
 					for (int j = i; j > p && s.compare(j - 1, j) > 0; --j) {
 						s.swap(j, j - 1);
 					}
