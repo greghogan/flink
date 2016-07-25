@@ -1226,29 +1226,38 @@ public abstract class MemorySegment {
 	 * @return 0 if equal, -1 if seg1 &lt; seg2, 1 otherwise
 	 */
 	public final int compare(MemorySegment seg2, int offset1, int offset2, int len) {
-		while (len >= 8) {
-			long l1 = this.getLongBigEndian(offset1);
-			long l2 = seg2.getLongBigEndian(offset2);
+		while (len > 0) {
+			long l1;
+			long l2;
+			int bytesRead;
+
+			if (len >= 8) {
+				l1 = this.getLongBigEndian(offset1);
+				l2 = seg2.getLongBigEndian(offset2);
+				bytesRead = 8;
+			} else if (len >= 4) {
+				l1 = this.getIntBigEndian(offset1);
+				l2 = seg2.getIntBigEndian(offset2);
+				bytesRead = 4;
+			} else if (len >= 2) {
+				l1 = this.getShortBigEndian(offset1);
+				l2 = seg2.getShortBigEndian(offset2);
+				bytesRead = 2;
+			} else {
+				l1 = this.get(offset1);
+				l2 = seg2.get(offset2);
+				bytesRead = 1;
+			}
 
 			if (l1 != l2) {
 				return (l1 < l2) ^ (l1 < 0) ^ (l2 < 0) ? -1 : 1;
 			}
 
-			offset1 += 8;
-			offset2 += 8;
-			len -= 8;
+			offset1 += bytesRead;
+			offset2 += bytesRead;
+			len -= bytesRead;
 		}
-		while (len > 0) {
-			int b1 = this.get(offset1) & 0xff;
-			int b2 = seg2.get(offset2) & 0xff;
-			int cmp = b1 - b2;
-			if (cmp != 0) {
-				return cmp;
-			}
-			offset1++;
-			offset2++;
-			len--;
-		}
+
 		return 0;
 	}
 
