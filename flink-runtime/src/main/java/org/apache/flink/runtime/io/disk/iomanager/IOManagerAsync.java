@@ -35,6 +35,8 @@ import static org.apache.flink.util.Preconditions.checkState;
  */
 public class IOManagerAsync extends IOManager implements UncaughtExceptionHandler {
 	
+	private static final int IO_DEPTH = 16;
+
 	/** The writer threads used for asynchronous block oriented channel writing. */
 	private final WriterThread[] writers;
 
@@ -75,27 +77,31 @@ public class IOManagerAsync extends IOManager implements UncaughtExceptionHandle
 	 */
 	public IOManagerAsync(String[] tempDirs) {
 		super(tempDirs);
-		
+
 		// start a write worker thread for each directory
-		this.writers = new WriterThread[tempDirs.length];
-		for (int i = 0; i < this.writers.length; i++) {
-			final WriterThread t = new WriterThread();
-			this.writers[i] = t;
-			t.setName("IOManager writer thread #" + (i + 1));
-			t.setDaemon(true);
-			t.setUncaughtExceptionHandler(this);
-			t.start();
+		this.writers = new WriterThread[tempDirs.length * IO_DEPTH];
+		for (int i = 0; i < tempDirs.length; i++) {
+			for (int d = 0; d < IO_DEPTH; d++) {
+				final WriterThread t = new WriterThread();
+				this.writers[i*IO_DEPTH + d] = t;
+				t.setName("IOManager writer thread #" + (i + 1) + "." + (d + 1));
+				t.setDaemon(true);
+				t.setUncaughtExceptionHandler(this);
+				t.start();
+			}
 		}
 
 		// start a reader worker thread for each directory
-		this.readers = new ReaderThread[tempDirs.length];
-		for (int i = 0; i < this.readers.length; i++) {
-			final ReaderThread t = new ReaderThread();
-			this.readers[i] = t;
-			t.setName("IOManager reader thread #" + (i + 1));
-			t.setDaemon(true);
-			t.setUncaughtExceptionHandler(this);
-			t.start();
+		this.readers = new ReaderThread[tempDirs.length * IO_DEPTH];
+		for (int i = 0; i < tempDirs.length; i++) {
+			for (int d = 0; d < IO_DEPTH; d++) {
+				final ReaderThread t = new ReaderThread();
+				this.readers[i*IO_DEPTH + d] = t;
+				t.setName("IOManager reader thread #" + (i + 1) + "." + (d + 1));
+				t.setDaemon(true);
+				t.setUncaughtExceptionHandler(this);
+				t.start();
+			}
 		}
 
 		// install a shutdown hook that makes sure the temp directories get deleted
@@ -223,13 +229,13 @@ public class IOManagerAsync extends IOManager implements UncaughtExceptionHandle
 								LinkedBlockingQueue<MemorySegment> returnQueue) throws IOException
 	{
 		checkState(!isShutdown.get(), "I/O-Manger is shut down.");
-		return new AsynchronousBlockWriter(channelID, this.writers[channelID.getThreadNum()].requestQueue, returnQueue);
+		return new AsynchronousBlockWriter(channelID, getWriteRequestQueue(channelID), returnQueue);
 	}
 	
 	@Override
 	public BlockChannelWriterWithCallback<MemorySegment> createBlockChannelWriter(FileIOChannel.ID channelID, RequestDoneCallback<MemorySegment> callback) throws IOException {
 		checkState(!isShutdown.get(), "I/O-Manger is shut down.");
-		return new AsynchronousBlockWriterWithCallback(channelID, this.writers[channelID.getThreadNum()].requestQueue, callback);
+		return new AsynchronousBlockWriterWithCallback(channelID, getWriteRequestQueue(channelID), callback);
 	}
 	
 	/**
@@ -247,28 +253,28 @@ public class IOManagerAsync extends IOManager implements UncaughtExceptionHandle
 										LinkedBlockingQueue<MemorySegment> returnQueue) throws IOException
 	{
 		checkState(!isShutdown.get(), "I/O-Manger is shut down.");
-		return new AsynchronousBlockReader(channelID, this.readers[channelID.getThreadNum()].requestQueue, returnQueue);
+		return new AsynchronousBlockReader(channelID, getReadRequestQueue(channelID), returnQueue);
 	}
 
 	@Override
 	public BufferFileWriter createBufferFileWriter(FileIOChannel.ID channelID) throws IOException {
 		checkState(!isShutdown.get(), "I/O-Manger is shut down.");
 
-		return new AsynchronousBufferFileWriter(channelID, writers[channelID.getThreadNum()].requestQueue);
+		return new AsynchronousBufferFileWriter(channelID, getWriteRequestQueue(channelID));
 	}
 
 	@Override
 	public BufferFileReader createBufferFileReader(FileIOChannel.ID channelID, RequestDoneCallback<Buffer> callback) throws IOException {
 		checkState(!isShutdown.get(), "I/O-Manger is shut down.");
 
-		return new AsynchronousBufferFileReader(channelID, readers[channelID.getThreadNum()].requestQueue, callback);
+		return new AsynchronousBufferFileReader(channelID, getReadRequestQueue(channelID), callback);
 	}
 
 	@Override
 	public BufferFileSegmentReader createBufferFileSegmentReader(FileIOChannel.ID channelID, RequestDoneCallback<FileSegment> callback) throws IOException {
 		checkState(!isShutdown.get(), "I/O-Manger is shut down.");
 
-		return new AsynchronousBufferFileSegmentReader(channelID, readers[channelID.getThreadNum()].requestQueue, callback);
+		return new AsynchronousBufferFileSegmentReader(channelID, getReadRequestQueue(channelID), callback);
 	}
 
 	/**
@@ -291,19 +297,21 @@ public class IOManagerAsync extends IOManager implements UncaughtExceptionHandle
 			List<MemorySegment> targetSegments, int numBlocks) throws IOException
 	{
 		checkState(!isShutdown.get(), "I/O-Manger is shut down.");
-		return new AsynchronousBulkBlockReader(channelID, this.readers[channelID.getThreadNum()].requestQueue, targetSegments, numBlocks);
+		return new AsynchronousBulkBlockReader(channelID, getReadRequestQueue(channelID), targetSegments, numBlocks);
 	}
 	
 	// -------------------------------------------------------------------------
-	//                             For Testing
+	//                  (not just) For Testing
 	// -------------------------------------------------------------------------
 	
 	RequestQueue<ReadRequest> getReadRequestQueue(FileIOChannel.ID channelID) {
-		return this.readers[channelID.getThreadNum()].requestQueue;
+		int idx = channelID.getThreadNum() * IO_DEPTH + ((channelID.hashCode() & 0x7FFFFFFF) % IO_DEPTH);
+		return this.readers[idx].requestQueue;
 	}
 	
 	RequestQueue<WriteRequest> getWriteRequestQueue(FileIOChannel.ID channelID) {
-		return this.writers[channelID.getThreadNum()].requestQueue;
+		int idx = channelID.getThreadNum() * IO_DEPTH + ((channelID.hashCode() & 0x7FFFFFFF) % IO_DEPTH);
+		return this.writers[idx].requestQueue;
 	}
 
 	// -------------------------------------------------------------------------
