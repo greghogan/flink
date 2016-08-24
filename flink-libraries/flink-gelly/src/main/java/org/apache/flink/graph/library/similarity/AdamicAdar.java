@@ -215,6 +215,7 @@ extends GraphAlgorithmWrappingDataSet<K, VV, EV, Result<K>> {
 		// t, u, adamic-adar score
 		GroupReduceOperator<Tuple3<K, K, FloatValue>, Result<K>> scores = twoPaths
 			.groupBy(0, 1)
+			.sortGroup(2, Order.ASCENDING)
 			.reduceGroup(new ComputeScores<K>(minimumScore, minimumRatio))
 				.name("Compute scores");
 
