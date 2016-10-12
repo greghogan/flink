@@ -19,11 +19,6 @@
 
 package org.apache.flink.runtime.operators.sort;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.flink.api.common.typeutils.TypeComparator;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.core.memory.MemorySegment;
@@ -31,6 +26,11 @@ import org.apache.flink.runtime.io.disk.iomanager.ChannelWriterOutputView;
 import org.apache.flink.runtime.memory.AbstractPagedInputView;
 import org.apache.flink.runtime.memory.AbstractPagedOutputView;
 import org.apache.flink.util.MutableObjectIterator;
+
+import java.io.EOFException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -68,7 +68,13 @@ public final class FixedLengthRecordSorter<T> implements InMemorySorter<T> {
 	private final int numKeyBytes;
 	
 	private final int recordSize;
-	
+
+	private final int recordOffset;
+
+	private final int recordsPerSegmentShift;
+
+	private final int recordsPerSegmentMask;
+
 	private final int recordsPerSegment;
 	
 	private final int lastEntryOffset;
@@ -117,8 +123,13 @@ public final class FixedLengthRecordSorter<T> implements InMemorySorter<T> {
 		}
 		
 		// compute the entry size and limits
-		this.recordsPerSegment = segmentSize / this.recordSize;
-		this.lastEntryOffset = (this.recordsPerSegment - 1) * this.recordSize;
+		this.recordOffset = 1 << (32 - Integer.numberOfLeadingZeros(this.recordSize - 1));
+
+		this.recordsPerSegmentShift = 31 - Integer.numberOfLeadingZeros(this.segmentSize / this.recordOffset);
+		this.recordsPerSegment = 1 << this.recordsPerSegmentShift;
+		this.recordsPerSegmentMask = this.recordsPerSegment - 1;
+
+		this.lastEntryOffset = this.segmentSize - this.recordOffset;
 		this.swapBuffer = new byte[this.recordSize];
 		
 		this.freeMemory = new ArrayList<MemorySegment>(memory);
@@ -254,11 +265,11 @@ public final class FixedLengthRecordSorter<T> implements InMemorySorter<T> {
 
 	@Override
 	public int compare(int i, int j) {
-		final int bufferNumI = i / this.recordsPerSegment;
-		final int segmentOffsetI = (i % this.recordsPerSegment) * this.recordSize;
+		final int bufferNumI = i >>> this.recordsPerSegmentShift;
+		final int segmentOffsetI = (i & this.recordsPerSegmentMask) * this.recordSize;
 		
-		final int bufferNumJ = j / this.recordsPerSegment;
-		final int segmentOffsetJ = (j % this.recordsPerSegment) * this.recordSize;
+		final int bufferNumJ = j >>> this.recordsPerSegmentShift;
+		final int segmentOffsetJ = (j & this.recordsPerSegmentMask) * this.recordSize;
 		
 		final MemorySegment segI = this.sortBuffer.get(bufferNumI);
 		final MemorySegment segJ = this.sortBuffer.get(bufferNumJ);
@@ -269,12 +280,12 @@ public final class FixedLengthRecordSorter<T> implements InMemorySorter<T> {
 
 	@Override
 	public void swap(int i, int j) {
-		final int bufferNumI = i / this.recordsPerSegment;
-		final int segmentOffsetI = (i % this.recordsPerSegment) * this.recordSize;
-		
-		final int bufferNumJ = j / this.recordsPerSegment;
-		final int segmentOffsetJ = (j % this.recordsPerSegment) * this.recordSize;
-		
+		final int bufferNumI = i >>> this.recordsPerSegmentShift;
+		final int segmentOffsetI = (i & this.recordsPerSegmentMask) * this.recordSize;
+
+		final int bufferNumJ = j >>> this.recordsPerSegmentShift;
+		final int segmentOffsetJ = (j & this.recordsPerSegmentMask) * this.recordSize;
+
 		final MemorySegment segI = this.sortBuffer.get(bufferNumI);
 		final MemorySegment segJ = this.sortBuffer.get(bufferNumJ);
 		
@@ -430,8 +441,8 @@ public final class FixedLengthRecordSorter<T> implements InMemorySorter<T> {
 		final SingleSegmentInputView inView = this.inView;
 		
 		final int recordsPerSegment = this.recordsPerSegment;
-		int currentMemSeg = start / recordsPerSegment;
-		int offset = (start % recordsPerSegment) * this.recordSize;
+		int currentMemSeg = start >>> recordsPerSegmentShift;
+		int offset = (start & this.recordsPerSegmentMask) * this.recordSize;
 		
 		while (num > 0) {
 			final MemorySegment currentIndexSegment = this.sortBuffer.get(currentMemSeg++);

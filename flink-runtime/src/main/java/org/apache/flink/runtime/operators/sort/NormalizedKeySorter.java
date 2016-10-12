@@ -18,11 +18,6 @@
 
 package org.apache.flink.runtime.operators.sort;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.flink.api.common.typeutils.TypeComparator;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.core.memory.MemorySegment;
@@ -33,6 +28,11 @@ import org.apache.flink.runtime.memory.ListMemorySegmentSource;
 import org.apache.flink.util.MutableObjectIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.EOFException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -90,7 +90,13 @@ public final class NormalizedKeySorter<T> implements InMemorySorter<T> {
 	private final int numKeyBytes;
 	
 	private final int indexEntrySize;
-	
+
+	private final int indexEntryOffset;
+
+	private final int indexEntriesPerSegmentShift;
+
+	private final int indexEntriesPerSegmentMask;
+
 	private final int indexEntriesPerSegment;
 	
 	private final int lastIndexEntryOffset;
@@ -167,8 +173,13 @@ public final class NormalizedKeySorter<T> implements InMemorySorter<T> {
 		
 		// compute the index entry size and limits
 		this.indexEntrySize = this.numKeyBytes + OFFSET_LEN;
-		this.indexEntriesPerSegment = segmentSize / this.indexEntrySize;
-		this.lastIndexEntryOffset = (this.indexEntriesPerSegment - 1) * this.indexEntrySize;
+		this.indexEntryOffset = 1 << (32 - Integer.numberOfLeadingZeros(this.indexEntrySize - 1));
+
+		this.indexEntriesPerSegmentShift = 31 - Integer.numberOfLeadingZeros(this.segmentSize / this.indexEntryOffset);
+		this.indexEntriesPerSegment = 1 << this.indexEntriesPerSegmentShift;
+		this.indexEntriesPerSegmentMask = this.indexEntriesPerSegment - 1;
+
+		this.lastIndexEntryOffset = this.segmentSize - this.indexEntryOffset;
 		this.swapBuffer = new byte[this.indexEntrySize];
 		
 		// set to initial state
@@ -289,7 +300,7 @@ public final class NormalizedKeySorter<T> implements InMemorySorter<T> {
 			this.comparator.putNormalizedKey(record, this.currentSortIndexSegment, this.currentSortIndexOffset + OFFSET_LEN, this.numKeyBytes);
 		}
 		
-		this.currentSortIndexOffset += this.indexEntrySize;
+		this.currentSortIndexOffset += this.indexEntryOffset;
 		this.currentDataBufferOffset = newOffset;
 		this.numRecords++;
 		return true;
@@ -304,10 +315,10 @@ public final class NormalizedKeySorter<T> implements InMemorySorter<T> {
 			throw new IndexOutOfBoundsException();
 		}
 		
-		final int bufferNum = logicalPosition / this.indexEntriesPerSegment;
-		final int segmentOffset = logicalPosition % this.indexEntriesPerSegment;
+		final int bufferNum = logicalPosition >>> this.indexEntriesPerSegmentShift;
+		final int segmentOffset = logicalPosition & this.indexEntriesPerSegmentMask;
 		
-		return (this.sortIndex.get(bufferNum).getLong(segmentOffset * this.indexEntrySize)) & POINTER_MASK;
+		return (this.sortIndex.get(bufferNum).getLong(segmentOffset * this.indexEntryOffset)) & POINTER_MASK;
 	}
 	
 	private T getRecordFromBuffer(T reuse, long pointer) throws IOException {
@@ -345,11 +356,11 @@ public final class NormalizedKeySorter<T> implements InMemorySorter<T> {
 
 	@Override
 	public int compare(int i, int j) {
-		final int bufferNumI = i / this.indexEntriesPerSegment;
-		final int segmentOffsetI = (i % this.indexEntriesPerSegment) * this.indexEntrySize;
+		final int bufferNumI = i >>> this.indexEntriesPerSegmentShift;
+		final int segmentOffsetI = (i & this.indexEntriesPerSegmentMask) * this.indexEntryOffset;
 		
-		final int bufferNumJ = j / this.indexEntriesPerSegment;
-		final int segmentOffsetJ = (j % this.indexEntriesPerSegment) * this.indexEntrySize;
+		final int bufferNumJ = j >>> this.indexEntriesPerSegmentShift;
+		final int segmentOffsetJ = (j & this.indexEntriesPerSegmentMask) * this.indexEntryOffset;
 		
 		final MemorySegment segI = this.sortIndex.get(bufferNumI);
 		final MemorySegment segJ = this.sortIndex.get(bufferNumJ);
@@ -368,11 +379,11 @@ public final class NormalizedKeySorter<T> implements InMemorySorter<T> {
 
 	@Override
 	public void swap(int i, int j) {
-		final int bufferNumI = i / this.indexEntriesPerSegment;
-		final int segmentOffsetI = (i % this.indexEntriesPerSegment) * this.indexEntrySize;
-		
-		final int bufferNumJ = j / this.indexEntriesPerSegment;
-		final int segmentOffsetJ = (j % this.indexEntriesPerSegment) * this.indexEntrySize;
+		final int bufferNumI = i >>> this.indexEntriesPerSegmentShift;
+		final int segmentOffsetI = (i & this.indexEntriesPerSegmentMask) * this.indexEntryOffset;
+
+		final int bufferNumJ = j >>> this.indexEntriesPerSegmentShift;
+		final int segmentOffsetJ = (j & this.indexEntriesPerSegmentMask) * this.indexEntryOffset;
 		
 		final MemorySegment segI = this.sortIndex.get(bufferNumI);
 		final MemorySegment segJ = this.sortIndex.get(bufferNumJ);
@@ -414,7 +425,7 @@ public final class NormalizedKeySorter<T> implements InMemorySorter<T> {
 					}
 					
 					long pointer = this.currentIndexSegment.getLong(this.currentOffset) & POINTER_MASK;
-					this.currentOffset += indexEntrySize;
+					this.currentOffset += indexEntryOffset;
 					
 					try {
 						return getRecordFromBuffer(target, pointer);
@@ -438,8 +449,8 @@ public final class NormalizedKeySorter<T> implements InMemorySorter<T> {
 						this.currentIndexSegment = sortIndex.get(++this.currentSegment);
 					}
 
-					long pointer = this.currentIndexSegment.getLong(this.currentOffset);
-					this.currentOffset += indexEntrySize;
+					long pointer = this.currentIndexSegment.getLong(this.currentOffset) & POINTER_MASK;
+					this.currentOffset += indexEntryOffset;
 
 					try {
 						return getRecordFromBuffer(pointer);
@@ -490,7 +501,7 @@ public final class NormalizedKeySorter<T> implements InMemorySorter<T> {
 			final MemorySegment currentIndexSegment = this.sortIndex.get(currentMemSeg++);
 
 			// go through all records in the memory segment
-			for (int offset = 0; currentRecord < numRecords && offset <= this.lastIndexEntryOffset; currentRecord++, offset += this.indexEntrySize) {
+			for (int offset = 0; currentRecord < numRecords && offset <= this.lastIndexEntryOffset; currentRecord++, offset += this.indexEntryOffset) {
 				final long pointer = currentIndexSegment.getLong(offset);
 				
 				// small records go into the regular spill file, large records into the special code path
@@ -522,8 +533,8 @@ public final class NormalizedKeySorter<T> implements InMemorySorter<T> {
 	 */
 	@Override
 	public void writeToOutput(final ChannelWriterOutputView output, final int start, int num) throws IOException {
-		int currentMemSeg = start / this.indexEntriesPerSegment;
-		int offset = (start % this.indexEntriesPerSegment) * this.indexEntrySize;
+		int currentMemSeg = start >>> this.indexEntriesPerSegmentShift;
+		int offset = (start & this.indexEntriesPerSegmentMask) * this.indexEntryOffset;
 		
 		while (num > 0)
 		{
@@ -531,7 +542,7 @@ public final class NormalizedKeySorter<T> implements InMemorySorter<T> {
 			// check whether we have a full or partially full segment
 			if (num >= this.indexEntriesPerSegment && offset == 0) {
 				// full segment
-				for (;offset <= this.lastIndexEntryOffset; offset += this.indexEntrySize) {
+				for (;offset <= this.lastIndexEntryOffset; offset += this.indexEntryOffset) {
 					final long pointer = currentIndexSegment.getLong(offset) & POINTER_MASK;
 					this.recordBuffer.setReadPosition(pointer);
 					this.serializer.copy(this.recordBuffer, output);
@@ -539,7 +550,7 @@ public final class NormalizedKeySorter<T> implements InMemorySorter<T> {
 				num -= this.indexEntriesPerSegment;
 			} else {
 				// partially filled segment
-				for (; num > 0 && offset <= this.lastIndexEntryOffset; num--, offset += this.indexEntrySize)
+				for (; num > 0 && offset <= this.lastIndexEntryOffset; num--, offset += this.indexEntryOffset)
 				{
 					final long pointer = currentIndexSegment.getLong(offset) & POINTER_MASK;
 					this.recordBuffer.setReadPosition(pointer);
