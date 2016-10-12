@@ -30,7 +30,7 @@ public interface IndexedSorter {
 	 * @see IndexedSortable#compare
 	 * @see IndexedSortable#swap
 	 */
-	void sort(IndexedSortable s, int l, int r);
+	void sort(IndexedSortable s, Index l, Index r);
 
 	void sort(IndexedSortable s);
 

@@ -30,41 +30,43 @@ public final class HeapSort implements IndexedSorter {
 	}
 
 	private static void downHeap(final IndexedSortable s, final int b, int i, final int N) {
-		for (int idx = i << 1; idx < N; idx = i << 1) {
-			if (idx + 1 < N && s.compare(b + idx, b + idx + 1) < 0) {
-				if (s.compare(b + i, b + idx + 1) < 0) {
-					s.swap(b + i, b + idx + 1);
-				} else {
-					return;
-				}
-				i = idx + 1;
-			} else if (s.compare(b + i, b + idx) < 0) {
-				s.swap(b + i, b + idx);
-				i = idx;
-			} else {
-				return;
-			}
-		}
+//		for (int idx = i << 1; idx < N; idx = i << 1) {
+//			if (idx + 1 < N && s.compare(b + idx, b + idx + 1) < 0) {
+//				if (s.compare(b + i, b + idx + 1) < 0) {
+//					s.swap(b + i, b + idx + 1);
+//				} else {
+//					return;
+//				}
+//				i = idx + 1;
+//			} else if (s.compare(b + i, b + idx) < 0) {
+//				s.swap(b + i, b + idx);
+//				i = idx;
+//			} else {
+//				return;
+//			}
+//		}
 	}
 
 
-	public void sort(final IndexedSortable s, final int p, final int r) {
-		final int N = r - p;
-		// build heap w/ reverse comparator, then write in-place from end
-		final int t = Integer.highestOneBit(N);
-		for (int i = t; i > 1; i >>>= 1) {
-			for (int j = i >>> 1; j < i; ++j) {
-				downHeap(s, p - 1, j, N + 1);
-			}
-		}
-		for (int i = r - 1; i > p; --i) {
-			s.swap(p, i);
-			downHeap(s, p - 1, 1, i - p + 1);
-		}
+	public void sort(final IndexedSortable s, Index p, Index r) {
+//		final int N = r - p;
+//		// build heap w/ reverse comparator, then write in-place from end
+//		final int t = Integer.highestOneBit(N);
+//		for (int i = t; i > 1; i >>>= 1) {
+//			for (int j = i >>> 1; j < i; ++j) {
+//				downHeap(s, p - 1, j, N + 1);
+//			}
+//		}
+//		for (int i = r - 1; i > p; --i) {
+//			s.swap(p, i);
+//			downHeap(s, p - 1, 1, i - p + 1);
+//		}
 	}
 
 	@Override
 	public void sort(IndexedSortable s) {
-		sort(s, 0, s.size());
+		Index p = new Index(0, s.getRecordSize(), s.getRecordsPerSegment());
+		Index r = new Index(s.size(), s.getRecordSize(), s.getRecordsPerSegment());
+		sort(s, p, r);
 	}
 }

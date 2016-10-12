@@ -27,12 +27,12 @@ public interface IndexedSortable {
 	 * Compare items at the given addresses consistent with the semantics of
 	 * {@link java.util.Comparator#compare(Object, Object)}.
 	 */
-	int compare(int i, int j);
+	int compare(Index i, Index j);
 
 	/**
 	 * Swap items at the given addresses.
 	 */
-	void swap(int i, int j);
+	void swap(Index i, Index j);
 
 	/**
 	 * Gets the number of elements in the sortable.
@@ -41,4 +41,7 @@ public interface IndexedSortable {
 	 */
 	int size();
 
+	int getRecordSize();
+
+	int getRecordsPerSegment();
 }

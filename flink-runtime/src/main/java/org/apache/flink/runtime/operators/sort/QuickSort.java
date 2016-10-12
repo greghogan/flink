@@ -26,7 +26,7 @@ public final class QuickSort implements IndexedSorter {
 	public QuickSort() {
 	}
 
-	private static void fix(IndexedSortable s, int p, int r) {
+	private static void fix(IndexedSortable s, Index p, Index r) {
 		if (s.compare(p, r) > 0) {
 			s.swap(p, r);
 		}
@@ -48,20 +48,29 @@ public final class QuickSort implements IndexedSorter {
 	 * {@link #getMaxDepth},
 	 * then switch to {@link HeapSort}.
 	 */
-	public void sort(final IndexedSortable s, int p, int r) {
-		sortInternal(s, p, r, getMaxDepth(r - p));
+	@Override
+	public void sort(final IndexedSortable s, Index p, Index r) {
+		sortInternal(s, p, r, getMaxDepth(r.getIndex() - p.getIndex()));
 	}
 
+	@Override
 	public void sort(IndexedSortable s) {
-		sort(s, 0, s.size());
+		Index p = new Index(0, s.getRecordSize(), s.getRecordsPerSegment());
+		Index r = new Index(s.size(), s.getRecordSize(), s.getRecordsPerSegment());
+		sort(s, p, r);
 	}
 
-	private static void sortInternal(final IndexedSortable s, int p, int r, int depth) {
+	private static void sortInternal(final IndexedSortable s, Index p, Index r, int depth) {
 		while (true) {
-			if (r - p < 13) {
-				for (int i = p; i < r; ++i) {
-					for (int j = i; j > p && s.compare(j - 1, j) > 0; --j) {
-						s.swap(j, j - 1);
+			if (r.getIndex() - p.getIndex() < 13) {
+				for (Index i = new Index(p); i.getIndex() < r.getIndex(); i.incrementAndGet()) {
+					Index j = new Index(i);
+					Index j_minus = j.decrement();
+
+					while (j.getIndex() > p.getIndex() && s.compare(j_minus, j) > 0) {
+						s.swap(j, j_minus);
+						j.decrementAndGet();
+						j_minus.decrementAndGet();
 					}
 				}
 				return;
@@ -73,34 +82,36 @@ public final class QuickSort implements IndexedSorter {
 			}
 
 			// select, move pivot into first position
-			fix(s, (p + r) >>> 1, p);
-			fix(s, (p + r) >>> 1, r - 1);
-			fix(s, p, r - 1);
+			Index r_minus = r.decrement();
+			Index middle = new Index((p.getIndex() + r.getIndex()) >>> 1, p.getRecordSize(), p.getLastOffset());
+			fix(s, middle, p);
+			fix(s, middle, r_minus);
+			fix(s, p, r_minus);
 
 			// Divide
-			int i = p;
-			int j = r;
-			int ll = p;
-			int rr = r;
+			Index i = p;
+			Index j = r;
+			Index ll = p;
+			Index rr = r;
 			int cr;
 			while (true) {
-				while (++i < j) {
+				while (i.incrementAndGet() < j.getIndex()) {
 					if ((cr = s.compare(i, p)) > 0) {
 						break;
 					}
-					if (0 == cr && ++ll != i) {
+					if (0 == cr && ll.incrementAndGet() != i.getIndex()) {
 						s.swap(ll, i);
 					}
 				}
-				while (--j > i) {
+				while (j.decrementAndGet() > i.getIndex()) {
 					if ((cr = s.compare(p, j)) > 0) {
 						break;
 					}
-					if (0 == cr && --rr != j) {
+					if (0 == cr && rr.decrementAndGet() != j.getIndex()) {
 						s.swap(rr, j);
 					}
 				}
-				if (i < j) {
+				if (i.getIndex() < j.getIndex()) {
 					s.swap(i, j);
 				} else {
 					break;
@@ -108,17 +119,21 @@ public final class QuickSort implements IndexedSorter {
 			}
 			j = i;
 			// swap pivot- and all eq values- into position
-			while (ll >= p) {
-				s.swap(ll--, --i);
+			while (ll.getIndex() >= p.getIndex()) {
+				i.decrementAndGet();
+				s.swap(ll, i);
+				ll.decrementAndGet();
 			}
-			while (rr < r) {
-				s.swap(rr++, j++);
+			while (rr.getIndex() < r.getIndex()) {
+				s.swap(rr, j);
+				rr.incrementAndGet();
+				j.incrementAndGet();
 			}
 
 			// Conquer
 			// Recurse on smaller interval first to keep stack shallow
-			assert i != j;
-			if (i - p < r - j) {
+			assert i.getIndex() != j.getIndex();
+			if (i.getIndex() - p.getIndex() < r.getIndex() - j.getIndex()) {
 				sortInternal(s, p, i, depth);
 				p = j;
 			} else {

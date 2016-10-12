@@ -263,9 +263,10 @@ public class FixedLengthRecordSorterTest {
 		while (sorter.write(record) && num < 3354624);
 		
 		// swap the records
-		int start = 0, end = num - 1;
-		while (start < end) {
-			sorter.swap(start++, end--);
+		Index start = new Index(0, sorter.getRecordSize(), sorter.getRecordsPerSegment());
+		Index end = new Index(num - 1, sorter.getRecordSize(), sorter.getRecordsPerSegment());
+		while (start.getIndex() < end.getIndex()) {
+			sorter.swap(start.getAndIncrement(), end.getAndDecrement());
 		}
 		
 		// re-read the records
@@ -411,7 +412,7 @@ public class FixedLengthRecordSorterTest {
 		final List<MemorySegment> readBuffer = this.memoryManager.allocatePages(new DummyInvokable(), 3);
 		ChannelReaderInputView readerInputView = new ChannelReaderInputView(blockChannelReader, readBuffer, false);
 		final List<MemorySegment> dataBuffer = this.memoryManager.allocatePages(new DummyInvokable(), 3);
-		ChannelReaderInputViewIterator<IntPair> iterator = new ChannelReaderInputViewIterator(readerInputView, dataBuffer, this.serializer);
+		ChannelReaderInputViewIterator<IntPair> iterator = new ChannelReaderInputViewIterator<>(readerInputView, dataBuffer, this.serializer);
 
 		record = iterator.next(record);
 		int i =0;
@@ -460,7 +461,7 @@ public class FixedLengthRecordSorterTest {
 		final List<MemorySegment> readBuffer = this.memoryManager.allocatePages(new DummyInvokable(), 3);
 		ChannelReaderInputView readerInputView = new ChannelReaderInputView(blockChannelReader, readBuffer, false);
 		final List<MemorySegment> dataBuffer = this.memoryManager.allocatePages(new DummyInvokable(), 3);
-		ChannelReaderInputViewIterator<IntPair> iterator = new ChannelReaderInputViewIterator(readerInputView, dataBuffer, this.serializer);
+		ChannelReaderInputViewIterator<IntPair> iterator = new ChannelReaderInputViewIterator<>(readerInputView, dataBuffer, this.serializer);
 
 		record = iterator.next(record);
 		int i =1;

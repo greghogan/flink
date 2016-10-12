@@ -18,11 +18,6 @@
 
 package org.apache.flink.runtime.operators.sort;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.flink.api.common.typeutils.TypeComparator;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.core.memory.MemorySegment;
@@ -33,6 +28,11 @@ import org.apache.flink.runtime.memory.ListMemorySegmentSource;
 import org.apache.flink.util.MutableObjectIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.EOFException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -344,13 +344,13 @@ public final class NormalizedKeySorter<T> implements InMemorySorter<T> {
 	// -------------------------------------------------------------------------
 
 	@Override
-	public int compare(int i, int j) {
-		final int bufferNumI = i / this.indexEntriesPerSegment;
-		final int segmentOffsetI = (i % this.indexEntriesPerSegment) * this.indexEntrySize;
-		
-		final int bufferNumJ = j / this.indexEntriesPerSegment;
-		final int segmentOffsetJ = (j % this.indexEntriesPerSegment) * this.indexEntrySize;
-		
+	public int compare(Index i, Index j) {
+		int bufferNumI = i.getPageNumber();
+		int segmentOffsetI = i.getPageOffset();
+
+		int bufferNumJ = j.getPageNumber();
+		int segmentOffsetJ = j.getPageOffset();
+
 		final MemorySegment segI = this.sortIndex.get(bufferNumI);
 		final MemorySegment segJ = this.sortIndex.get(bufferNumJ);
 		
@@ -367,13 +367,13 @@ public final class NormalizedKeySorter<T> implements InMemorySorter<T> {
 	}
 
 	@Override
-	public void swap(int i, int j) {
-		final int bufferNumI = i / this.indexEntriesPerSegment;
-		final int segmentOffsetI = (i % this.indexEntriesPerSegment) * this.indexEntrySize;
-		
-		final int bufferNumJ = j / this.indexEntriesPerSegment;
-		final int segmentOffsetJ = (j % this.indexEntriesPerSegment) * this.indexEntrySize;
-		
+	public void swap(Index i, Index j) {
+		int bufferNumI = i.getPageNumber();
+		int segmentOffsetI = i.getPageOffset();
+
+		int bufferNumJ = j.getPageNumber();
+		int segmentOffsetJ = j.getPageOffset();
+
 		final MemorySegment segI = this.sortIndex.get(bufferNumI);
 		final MemorySegment segJ = this.sortIndex.get(bufferNumJ);
 		
@@ -383,6 +383,16 @@ public final class NormalizedKeySorter<T> implements InMemorySorter<T> {
 	@Override
 	public int size() {
 		return this.numRecords;
+	}
+
+	@Override
+	public int getRecordSize() {
+		return this.indexEntrySize;
+	}
+
+	@Override
+	public int getRecordsPerSegment() {
+		return this.indexEntriesPerSegment;
 	}
 
 	// -------------------------------------------------------------------------

@@ -19,11 +19,6 @@
 
 package org.apache.flink.runtime.operators.sort;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.flink.api.common.typeutils.TypeComparator;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.core.memory.MemorySegment;
@@ -31,6 +26,11 @@ import org.apache.flink.runtime.io.disk.iomanager.ChannelWriterOutputView;
 import org.apache.flink.runtime.memory.AbstractPagedInputView;
 import org.apache.flink.runtime.memory.AbstractPagedOutputView;
 import org.apache.flink.util.MutableObjectIterator;
+
+import java.io.EOFException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -253,37 +253,35 @@ public final class FixedLengthRecordSorter<T> implements InMemorySorter<T> {
 	// -------------------------------------------------------------------------
 
 	@Override
-	public int compare(int i, int j) {
-		final int bufferNumI = i / this.recordsPerSegment;
-		final int segmentOffsetI = (i % this.recordsPerSegment) * this.recordSize;
-		
-		final int bufferNumJ = j / this.recordsPerSegment;
-		final int segmentOffsetJ = (j % this.recordsPerSegment) * this.recordSize;
-		
-		final MemorySegment segI = this.sortBuffer.get(bufferNumI);
-		final MemorySegment segJ = this.sortBuffer.get(bufferNumJ);
-		
-		int val = segI.compare(segJ, segmentOffsetI, segmentOffsetJ, this.numKeyBytes);
+	public int compare(Index i, Index j) {
+		final MemorySegment segI = this.sortBuffer.get(i.getPageNumber());
+		final MemorySegment segJ = this.sortBuffer.get(j.getPageNumber());
+
+		int val = segI.compare(segJ, i.getPageOffset(), j.getPageOffset(), this.numKeyBytes);
 		return this.useNormKeyUninverted ? val : -val;
 	}
 
 	@Override
-	public void swap(int i, int j) {
-		final int bufferNumI = i / this.recordsPerSegment;
-		final int segmentOffsetI = (i % this.recordsPerSegment) * this.recordSize;
-		
-		final int bufferNumJ = j / this.recordsPerSegment;
-		final int segmentOffsetJ = (j % this.recordsPerSegment) * this.recordSize;
-		
-		final MemorySegment segI = this.sortBuffer.get(bufferNumI);
-		final MemorySegment segJ = this.sortBuffer.get(bufferNumJ);
-		
-		segI.swapBytes(this.swapBuffer, segJ, segmentOffsetI, segmentOffsetJ, this.recordSize);
+	public void swap(Index i, Index j) {
+		final MemorySegment segI = this.sortBuffer.get(i.getPageNumber());
+		final MemorySegment segJ = this.sortBuffer.get(j.getPageNumber());
+
+		segI.swapBytes(this.swapBuffer, segJ, i.getPageOffset(), j.getPageOffset(), this.recordSize);
 	}
 
 	@Override
 	public int size() {
 		return this.numRecords;
+	}
+
+	@Override
+	public int getRecordSize() {
+		return this.recordSize;
+	}
+
+	@Override
+	public int getRecordsPerSegment() {
+		return this.recordsPerSegment;
 	}
 
 	// -------------------------------------------------------------------------

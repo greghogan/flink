@@ -318,26 +318,29 @@ public class CombiningUnilateralSortMerger<E> extends UnilateralSortMerger<E> {
 				final CombineValueIterator<E> iter = new CombineValueIterator<E>(buffer, this.serializer.createInstance());
 				final WriterCollector<E> collector = new WriterCollector<E>(output, this.serializer);
 
-				int i = 0;
+				Index i = new Index(0, buffer.getRecordSize(), buffer.getRecordsPerSegment());
+				Index i_plus = i.increment();
 				int stop = buffer.size() - 1;
 
 				try {
-					while (i < stop) {
-						int seqStart = i;
-						while (i < stop && 0 == buffer.compare(i, i + 1)) {
-							i++;
+					while (i.getIndex() < stop) {
+						int seqStart = i.getIndex();
+						while (i.getIndex() < stop && 0 == buffer.compare(i, i_plus)) {
+							i.incrementAndGet();
+							i_plus.incrementAndGet();
 						}
-	
-						if (i == seqStart) {
+
+						if (i.getIndex() == seqStart) {
 							// no duplicate key, no need to combine. simply copy
 							buffer.writeToOutput(output, seqStart, 1);
 						} else {
 							// get the iterator over the values
-							iter.set(seqStart, i);
+							iter.set(seqStart, i.getIndex());
 							// call the combiner to combine
 							combineStub.combine(iter, collector);
 						}
-						i++;
+						i.incrementAndGet();
+						i_plus.incrementAndGet();
 					}
 				}
 				catch (Exception ex) {
@@ -345,7 +348,7 @@ public class CombiningUnilateralSortMerger<E> extends UnilateralSortMerger<E> {
 				}
 
 				// write the last pair, if it has not yet been included in the last iteration
-				if (i == stop) {
+				if (i.getIndex() == stop) {
 					buffer.writeToOutput(output, stop, 1);
 				}
 
