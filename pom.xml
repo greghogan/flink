@@ -69,7 +69,7 @@ under the License.
 		<module>flink-tests</module>
 		<module>flink-test-utils-parent</module>
 		<module>flink-libraries</module>
-		<module>flink-scala-shell</module>
+		<!--<module>flink-scala-shell</module>-->
 		<module>flink-quickstart</module>
 		<module>flink-contrib</module>
 		<module>flink-dist</module>
@@ -1004,7 +1004,6 @@ under the License.
 							</includes>
 							<excludes>
 								<exclude>**/*ITCase.*</exclude>
-								<exclude>${flink-fast-tests-pattern}</exclude>
 							</excludes>
 						</configuration>
 					</execution>
@@ -1019,9 +1018,6 @@ under the License.
 							<includes>
 								<include>**/*ITCase.*</include>
 							</includes>
-							<excludes>
-								<exclude>${flink-fast-tests-pattern}</exclude>
-							</excludes>
 							<reuseForks>false</reuseForks>
 						</configuration>
 					</execution>

@@ -37,8 +37,8 @@ under the License.
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>flink-storm</module>
-		<module>flink-storm-examples</module>
+		<!--<module>flink-storm</module>-->
+		<!--<module>flink-storm-examples</module>-->
 		<module>flink-streaming-contrib</module>
 		<module>flink-tweet-inputformat</module>
 		<module>flink-connector-wikiedits</module>

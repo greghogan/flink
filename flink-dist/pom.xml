@@ -96,7 +96,7 @@ under the License.
 			<artifactId>flink-streaming-scala_2.10</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
+<!--
 		<dependency>
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-python_2.10</artifactId>
@@ -108,7 +108,7 @@ under the License.
 			<artifactId>flink-scala-shell_2.10</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
+-->
 		<dependency>
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-metrics-core</artifactId>
@@ -192,6 +192,7 @@ under the License.
 		<!-- end optional Flink metrics reporters -->
 
 		<!-- start optional Flink libraries -->
+<!--
 		<dependency>
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-cep_2.10</artifactId>
@@ -233,6 +234,7 @@ under the License.
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
+-->
 		<!-- end optional Flink libraries -->
 	</dependencies>
 
@@ -371,20 +373,6 @@ under the License.
 						<configuration>
 							<descriptors>
 								<descriptor>src/main/assemblies/bin.xml</descriptor>
-							</descriptors>
-							<finalName>flink-${project.version}-bin</finalName>
-							<appendAssemblyId>false</appendAssemblyId>
-						</configuration>
-					</execution>
-					<execution>
-						<id>opt</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<descriptors>
-								<descriptor>src/main/assemblies/opt.xml</descriptor>
 							</descriptors>
 							<finalName>flink-${project.version}-bin</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
