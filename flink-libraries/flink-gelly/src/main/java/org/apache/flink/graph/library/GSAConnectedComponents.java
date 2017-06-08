@@ -98,6 +98,7 @@ public class GSAConnectedComponents<K, VV extends Comparable<VV>, EV>
 			this.typeInformation = typeInformation;
 		}
 
+		@Override
 		public VV gather(Neighbor<VV, NullValue> neighbor) {
 			return neighbor.getNeighborValue();
 		}
@@ -118,6 +119,7 @@ public class GSAConnectedComponents<K, VV extends Comparable<VV>, EV>
 			this.typeInformation = typeInformation;
 		}
 
+		@Override
 		public VV sum(VV newValue, VV currentValue) {
 			return newValue.compareTo(currentValue) < 0 ? newValue : currentValue;
 		}
@@ -138,6 +140,7 @@ public class GSAConnectedComponents<K, VV extends Comparable<VV>, EV>
 			this.typeInformation = typeInformation;
 		}
 
+		@Override
 		public void apply(VV summedValue, VV origValue) {
 			if (summedValue.compareTo(origValue) < 0) {
 				setResult(summedValue);

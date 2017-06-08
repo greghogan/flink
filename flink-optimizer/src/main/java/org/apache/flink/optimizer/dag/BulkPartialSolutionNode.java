@@ -61,6 +61,7 @@ public class BulkPartialSolutionNode extends AbstractPartialSolutionNode {
 		}
 	}
 	
+	@Override
 	public BulkIterationNode getIterationNode() {
 		return this.iterationNode;
 	}

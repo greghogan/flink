@@ -38,6 +38,7 @@ public abstract class TableInputFormat<T extends Tuple> extends AbstractTableInp
 	 * Returns an instance of Scan that retrieves the required subset of records from the HBase table.
 	 * @return The appropriate instance of Scan for this usecase.
 	 */
+	@Override
 	protected abstract Scan getScanner();
 
 	/**
@@ -45,6 +46,7 @@ public abstract class TableInputFormat<T extends Tuple> extends AbstractTableInp
 	 * Per instance of a TableInputFormat derivative only a single tablename is possible.
 	 * @return The name of the table
 	 */
+	@Override
 	protected abstract String getTableName();
 
 	/**
@@ -88,6 +90,7 @@ public abstract class TableInputFormat<T extends Tuple> extends AbstractTableInp
 		return null;
 	}
 
+	@Override
 	protected T mapResultToOutType(Result r) {
 		return mapResultToTuple(r);
 	}

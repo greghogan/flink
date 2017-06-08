@@ -677,6 +677,7 @@ public class ScatterGatherIteration<K, VV, Message, EV>
 		return iteration.closeWith(updates, updates).map(
 				new MapFunction<Vertex<K, Tuple3<VV, LongValue, LongValue>>, Vertex<K, VV>>() {
 
+					@Override
 					public Vertex<K, VV> map(Vertex<K, Tuple3<VV, LongValue, LongValue>> vertex) {
 						return new Vertex<>(vertex.getId(), vertex.getValue().f0);
 					}

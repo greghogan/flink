@@ -176,6 +176,7 @@ public class BulkIterationBase<T> extends SingleInputOperator<T, T, AbstractRich
 	 * 
 	 * @return An empty map.
 	 */
+	@Override
 	public Map<String, Operator<?>> getBroadcastInputs() {
 		return Collections.emptyMap();
 	}
@@ -187,6 +188,7 @@ public class BulkIterationBase<T> extends SingleInputOperator<T, T, AbstractRich
 	 * @param name Ignored.
 	 * @param root Ignored.
 	 */
+	@Override
 	public void setBroadcastVariable(String name, Operator<?> root) {
 		throw new UnsupportedOperationException("The BulkIteration meta operator cannot have broadcast inputs.");
 	}
@@ -197,6 +199,7 @@ public class BulkIterationBase<T> extends SingleInputOperator<T, T, AbstractRich
 	 * 
 	 * @param inputs Ignored
 	 */
+	@Override
 	public <X> void setBroadcastVariables(Map<String, Operator<X>> inputs) {
 		throw new UnsupportedOperationException("The BulkIteration meta operator cannot have broadcast inputs.");
 	}

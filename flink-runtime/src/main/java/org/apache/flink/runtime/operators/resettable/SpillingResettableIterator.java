@@ -114,6 +114,7 @@ public class SpillingResettableIterator<T> implements ResettableIterator<T> {
 		}
 	}
 
+	@Override
 	public void reset() throws IOException {
 		this.inView = this.buffer.flip();
 		this.currentElementNum = 0;

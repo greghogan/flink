@@ -37,6 +37,7 @@ extends ParameterTestBase {
 
 	private StringParameter parameter;
 
+	@Override
 	@Before
 	public void setup() {
 		super.setup();

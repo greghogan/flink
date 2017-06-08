@@ -1557,6 +1557,7 @@ public class MutableHashTable<BT, PT> implements MemorySegmentSource {
 			this.numInSegment = 0;
 		}
 		
+		@Override
 		public BT next(BT reuse) {
 			// loop over all segments that are involved in the bucket (original bucket plus overflow buckets)
 			while (true) {
@@ -1608,6 +1609,7 @@ public class MutableHashTable<BT, PT> implements MemorySegmentSource {
 			}
 		}
 
+		@Override
 		public BT next() {
 			// loop over all segments that are involved in the bucket (original bucket plus overflow buckets)
 			while (true) {
@@ -1737,6 +1739,7 @@ public class MutableHashTable<BT, PT> implements MemorySegmentSource {
 			}
 		}
 		
+		@Override
 		public BT next(BT reuse) {
 			// search unprobed record in bucket, while none found move to next bucket and search.
 			while (true) {
@@ -1752,6 +1755,7 @@ public class MutableHashTable<BT, PT> implements MemorySegmentSource {
 			}
 		}
 		
+		@Override
 		public BT next() {
 			// search unprobed record in bucket, while none found move to next bucket and search.
 			while (true) {

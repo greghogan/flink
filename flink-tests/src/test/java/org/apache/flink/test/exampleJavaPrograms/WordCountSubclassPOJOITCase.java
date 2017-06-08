@@ -57,6 +57,7 @@ public class WordCountSubclassPOJOITCase extends JavaProgramTestBase implements 
 				.groupBy("word")
 				.reduce(new ReduceFunction<WCBase>() {
 					private static final long serialVersionUID = 1L;
+					@Override
 					public WCBase reduce(WCBase value1, WCBase value2) {
 						WC wc1 = (WC) value1;
 						WC wc2 = (WC) value2;

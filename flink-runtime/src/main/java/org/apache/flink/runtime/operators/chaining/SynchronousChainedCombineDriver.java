@@ -153,10 +153,12 @@ public class SynchronousChainedCombineDriver<IN, OUT> extends ChainedDriver<IN, 
 
 	// --------------------------------------------------------------------------------------------
 
+	@Override
 	public Function getStub() {
 		return this.combiner;
 	}
 
+	@Override
 	public String getTaskName() {
 		return this.taskName;
 	}

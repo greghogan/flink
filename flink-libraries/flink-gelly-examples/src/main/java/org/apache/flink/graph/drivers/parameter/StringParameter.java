@@ -43,6 +43,7 @@ extends SimpleParameter<String> {
 	 * @param defaultValue the default value.
 	 * @return this
 	 */
+	@Override
 	public StringParameter setDefaultValue(String defaultValue) {
 		super.setDefaultValue(defaultValue);
 		return this;

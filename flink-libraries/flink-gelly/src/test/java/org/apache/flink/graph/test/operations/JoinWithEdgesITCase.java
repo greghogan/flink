@@ -470,6 +470,7 @@ public class JoinWithEdgesITCase extends MultipleProgramsTestBase {
 	@SuppressWarnings("serial")
 	private static final class AddValuesMapper implements EdgeJoinFunction<Long, Long> {
 
+		@Override
 		public Long edgeJoin(Long edgeValue, Long inputValue) throws Exception {
 			return edgeValue + inputValue;
 		}
@@ -477,6 +478,7 @@ public class JoinWithEdgesITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class BooleanEdgeValueMapper implements MapFunction<Edge<Long, Long>, Tuple3<Long, Long, Boolean>> {
+		@Override
 		public Tuple3<Long, Long, Boolean> map(Edge<Long, Long> edge) throws Exception {
 			return new Tuple3<>(edge.getSource(), edge.getTarget(), true);
 		}
@@ -485,6 +487,7 @@ public class JoinWithEdgesITCase extends MultipleProgramsTestBase {
 	@SuppressWarnings("serial")
 	private static final class DoubleIfTrueMapper implements EdgeJoinFunction<Long, Boolean> {
 
+		@Override
 		public Long edgeJoin(Long edgeValue, Boolean inputValue) {
 			if (inputValue) {
 				return edgeValue * 2;
@@ -497,6 +500,7 @@ public class JoinWithEdgesITCase extends MultipleProgramsTestBase {
 	@SuppressWarnings("serial")
 	private static final class DoubleValueMapper implements EdgeJoinFunction<Long, Long> {
 
+		@Override
 		public Long edgeJoin(Long edgeValue, Long inputValue) {
 			return inputValue * 2;
 		}
@@ -505,6 +509,7 @@ public class JoinWithEdgesITCase extends MultipleProgramsTestBase {
 	@SuppressWarnings("serial")
 	private static final class CustomValueMapper implements EdgeJoinFunction<Long, DummyCustomParameterizedType<Float>> {
 
+		@Override
 		public Long edgeJoin(Long edgeValue, DummyCustomParameterizedType<Float> inputValue) {
 			return (long) inputValue.getIntField();
 		}
@@ -512,6 +517,7 @@ public class JoinWithEdgesITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class ProjectSourceAndValueMapper implements MapFunction<Edge<Long, Long>, Tuple2<Long, Long>> {
+		@Override
 		public Tuple2<Long, Long> map(Edge<Long, Long> edge) throws Exception {
 			return new Tuple2<>(edge.getSource(), edge.getValue());
 		}
@@ -519,6 +525,7 @@ public class JoinWithEdgesITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class ProjectSourceWithTrueMapper implements MapFunction<Edge<Long, Long>, Tuple2<Long, Boolean>> {
+		@Override
 		public Tuple2<Long, Boolean> map(Edge<Long, Long> edge) throws Exception {
 			return new Tuple2<>(edge.getSource(), true);
 		}
@@ -526,6 +533,7 @@ public class JoinWithEdgesITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class ProjectTargetAndValueMapper implements MapFunction<Edge<Long, Long>, Tuple2<Long, Long>> {
+		@Override
 		public Tuple2<Long, Long> map(Edge<Long, Long> edge) throws Exception {
 			return new Tuple2<>(edge.getTarget(), edge.getValue());
 		}
@@ -533,6 +541,7 @@ public class JoinWithEdgesITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class ProjectTargetWithTrueMapper implements MapFunction<Edge<Long, Long>, Tuple2<Long, Boolean>> {
+		@Override
 		public Tuple2<Long, Boolean> map(Edge<Long, Long> edge) throws Exception {
 			return new Tuple2<>(edge.getTarget(), true);
 		}

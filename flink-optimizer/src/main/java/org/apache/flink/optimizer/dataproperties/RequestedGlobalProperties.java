@@ -466,6 +466,7 @@ public final class RequestedGlobalProperties implements Cloneable {
 			(this.ordering == null ? "" : ", with ordering " + this.ordering) + "]";
 	}
 
+	@Override
 	public RequestedGlobalProperties clone() {
 		try {
 			return (RequestedGlobalProperties) super.clone();

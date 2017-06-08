@@ -173,6 +173,7 @@ public class BulkIterationNode extends SingleInputNode implements IterationNode 
 		nextPartialSolution.addOutgoingConnection(rootConnection);
 	}
 	
+	@Override
 	public int getCostWeight() {
 		return this.costWeight;
 	}
@@ -193,6 +194,7 @@ public class BulkIterationNode extends SingleInputNode implements IterationNode 
 		return new EmptySemanticProperties();
 	}
 	
+	@Override
 	protected void readStubAnnotations() {}
 	
 	@Override
@@ -205,6 +207,7 @@ public class BulkIterationNode extends SingleInputNode implements IterationNode 
 	//                             Properties and Optimization
 	// --------------------------------------------------------------------------------------------
 	
+	@Override
 	protected List<OperatorDescriptorSingle> getPossibleProperties() {
 		return Collections.<OperatorDescriptorSingle>singletonList(new NoOpDescriptor());
 	}
@@ -388,6 +391,7 @@ public class BulkIterationNode extends SingleInputNode implements IterationNode 
 	//                      Iteration Specific Traversals
 	// --------------------------------------------------------------------------------------------
 
+	@Override
 	public void acceptForStepFunction(Visitor<OptimizerNode> visitor) {
 		this.singleRoot.accept(visitor);
 	}

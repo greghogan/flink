@@ -92,6 +92,7 @@ public class SingleSourceShortestPaths implements ProgramDescription {
 			this.srcId = srcId;
 		}
 
+		@Override
 		public Double map(Long id) {
 			if (id.equals(srcId)) {
 				return 0.0;

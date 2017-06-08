@@ -103,6 +103,7 @@ public class TestingSerialRpcService implements RpcService {
 		return executorService;
 	}
 
+	@Override
 	public ScheduledExecutor getScheduledExecutor() {
 		return scheduledExecutorServiceAdapter;
 	}

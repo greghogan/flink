@@ -120,6 +120,7 @@ public final class BlobCache implements BlobService {
 	 * @return URL referring to the local storage location of the BLOB.
 	 * @throws IOException Thrown if an I/O error occurs while downloading the BLOBs from the BLOB server.
 	 */
+	@Override
 	public URL getURL(final BlobKey requiredBlob) throws IOException {
 		checkArgument(requiredBlob != null, "BLOB key cannot be null.");
 
@@ -222,6 +223,7 @@ public final class BlobCache implements BlobService {
 	 * Deletes the file associated with the given key from the BLOB cache.
 	 * @param key referring to the file to be deleted
 	 */
+	@Override
 	public void delete(BlobKey key) throws IOException{
 		final File localFile = BlobUtils.getStorageLocation(storageDir, key);
 

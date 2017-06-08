@@ -41,26 +41,31 @@ public class ReusingSortMergeOuterJoinIteratorITCase extends AbstractSortMergeOu
 				serializer2, comparator2, pairComparator, memoryManager, ioManager, numMemoryPages, parentTask);
 	}
 
+	@Override
 	@Test
 	public void testFullOuterWithSample() throws Exception {
 		super.testFullOuterWithSample();
 	}
 
+	@Override
 	@Test
 	public void testLeftOuterWithSample() throws Exception {
 		super.testLeftOuterWithSample();
 	}
 
+	@Override
 	@Test
 	public void testRightOuterWithSample() throws Exception {
 		super.testRightOuterWithSample();
 	}
 
+	@Override
 	@Test
 	public void testRightSideEmpty() throws Exception {
 		super.testRightSideEmpty();
 	}
 
+	@Override
 	@Test
 	public void testLeftSideEmpty() throws Exception {
 		super.testLeftSideEmpty();

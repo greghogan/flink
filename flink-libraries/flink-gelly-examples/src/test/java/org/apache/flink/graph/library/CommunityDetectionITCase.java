@@ -78,6 +78,7 @@ public class CommunityDetectionITCase extends MultipleProgramsTestBase {
 	@SuppressWarnings("serial")
 	private static final class InitLabels implements MapFunction<Long, Long> {
 
+		@Override
 		public Long map(Long id) {
 			return id;
 		}

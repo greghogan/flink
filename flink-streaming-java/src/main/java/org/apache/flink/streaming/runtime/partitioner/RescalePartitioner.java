@@ -56,6 +56,7 @@ public class RescalePartitioner<T> extends StreamPartitioner<T> {
 		return this.returnArray;
 	}
 
+	@Override
 	public StreamPartitioner<T> copy() {
 		return this;
 	}

@@ -335,6 +335,7 @@ public class MemoryStateBackendTest extends StateBackendTestBase<MemoryStateBack
 		}
 	}
 
+	@Override
 	@Ignore
 	@Test
 	public void testConcurrentMapIfQueryable() throws Exception {

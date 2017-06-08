@@ -861,6 +861,7 @@ public class WindowOperator<K, IN, ACC, OUT, W extends Window>
 			return WindowOperator.this.getMetricGroup();
 		}
 
+		@Override
 		public long getCurrentWatermark() {
 			return internalTimerService.currentWatermark();
 		}
@@ -896,6 +897,7 @@ public class WindowOperator<K, IN, ACC, OUT, W extends Window>
 			return getPartitionedState(stateDesc);
 		}
 
+		@Override
 		@SuppressWarnings("unchecked")
 		public <S extends State> S getPartitionedState(StateDescriptor<S, ?> stateDescriptor) {
 			try {

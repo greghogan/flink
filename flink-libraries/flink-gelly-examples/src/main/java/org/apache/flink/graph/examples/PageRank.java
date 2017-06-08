@@ -117,6 +117,7 @@ public class PageRank<K> implements GraphAlgorithm<K, Double, Double, DataSet<Ve
 
 	@SuppressWarnings("serial")
 	private static final class InitWeights implements EdgeJoinFunction<Double, LongValue> {
+		@Override
 		public Double edgeJoin(Double edgeValue, LongValue inputValue) {
 			return edgeValue / (double) inputValue.getValue();
 		}

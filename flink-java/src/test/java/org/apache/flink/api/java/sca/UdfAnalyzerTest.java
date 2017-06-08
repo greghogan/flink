@@ -58,6 +58,7 @@ public class UdfAnalyzerTest {
 
 	@ForwardedFields("f0->*")
 	public static class Map1 implements MapFunction<Tuple2<String, Integer>, String> {
+		@Override
 		public String map(Tuple2<String, Integer> value) throws Exception {
 			return value.f0;
 		}
@@ -71,6 +72,7 @@ public class UdfAnalyzerTest {
 
 	@ForwardedFields("f0->f0;f0->f1")
 	public static class Map2 implements MapFunction<Tuple2<String, Integer>, Tuple2<String, String>> {
+		@Override
 		public Tuple2<String, String> map(Tuple2<String, Integer> value) throws Exception {
 			return new Tuple2<String, String>(value.f0, value.f0);
 		}
@@ -138,6 +140,7 @@ public class UdfAnalyzerTest {
 
 	@ForwardedFields("f0->f1")
 	public static class Map7 implements MapFunction<Tuple2<String, Integer>, Tuple2<String, String>> {
+		@Override
 		public Tuple2<String, String> map(Tuple2<String, Integer> value) throws Exception {
 			if (value.f0.equals("whatever")) {
 				return new Tuple2<String, String>(value.f0, value.f0);
@@ -154,6 +157,7 @@ public class UdfAnalyzerTest {
 	}
 
 	public static class Map8 implements MapFunction<Tuple2<String, String>, String> {
+		@Override
 		public String map(Tuple2<String, String> value) throws Exception {
 			if (value.f0.equals("whatever")) {
 				return value.f0;
@@ -173,6 +177,7 @@ public class UdfAnalyzerTest {
 	public static class Map9 implements MapFunction<String, Tuple1<String>> {
 		private Tuple1<String> tuple = new Tuple1<String>();
 
+		@Override
 		public Tuple1<String> map(String value) throws Exception {
 			tuple.f0 = value;
 			return tuple;
@@ -188,6 +193,7 @@ public class UdfAnalyzerTest {
 	public static class Map10 implements MapFunction<String, Tuple1<Tuple1<String>>> {
 		private Tuple1<Tuple1<String>> tuple = new Tuple1<Tuple1<String>>();
 
+		@Override
 		public Tuple1<Tuple1<String>> map(String value) throws Exception {
 			tuple.f0.f0 = value;
 			return tuple;
@@ -204,6 +210,7 @@ public class UdfAnalyzerTest {
 	public static class Map11 implements MapFunction<String, Tuple2<String, String>> {
 		private Tuple2<String, String> tuple = new Tuple2<String, String>();
 
+		@Override
 		public Tuple2<String, String> map(String value) throws Exception {
 			tuple.f0 = value;
 			modify();
@@ -224,6 +231,7 @@ public class UdfAnalyzerTest {
 
 	@ForwardedFields("f0->f0.f0;f0->f1.f0")
 	public static class Map12 implements MapFunction<Tuple2<String, Integer>, Tuple2<Tuple1<String>, Tuple1<String>>> {
+		@Override
 		public Tuple2<Tuple1<String>, Tuple1<String>> map(Tuple2<String, Integer> value) throws Exception {
 			return new Tuple2<Tuple1<String>, Tuple1<String>>(new Tuple1<String>(value.f0), new Tuple1<String>(
 					value.f0));
@@ -238,6 +246,7 @@ public class UdfAnalyzerTest {
 
 	@ForwardedFields("f0->f1.f0")
 	public static class Map13 implements MapFunction<Tuple2<String, Integer>, Tuple2<Tuple1<String>, Tuple1<String>>> {
+		@Override
 		@SuppressWarnings("unchecked")
 		public Tuple2<Tuple1<String>, Tuple1<String>> map(Tuple2<String, Integer> value) throws Exception {
 			Tuple2<?, ?> t = new Tuple2<Tuple1<String>, Tuple1<String>>(new Tuple1<String>(value.f0),
@@ -255,6 +264,7 @@ public class UdfAnalyzerTest {
 
 	@ForwardedFields("f0")
 	public static class Map14 implements MapFunction<Tuple2<String, Integer>, Tuple2<String, String>> {
+		@Override
 		public Tuple2<String, String> map(Tuple2<String, Integer> value) throws Exception {
 			Tuple2<String, String> t = new Tuple2<String, String>();
 			t.f0 = value.f0;
@@ -270,6 +280,7 @@ public class UdfAnalyzerTest {
 
 	@ForwardedFields("f0.f0->f0")
 	public static class Map15 implements MapFunction<Tuple2<Tuple1<String>, Integer>, Tuple2<String, String>> {
+		@Override
 		public Tuple2<String, String> map(Tuple2<Tuple1<String>, Integer> value) throws Exception {
 			Tuple2<String, String> t = new Tuple2<String, String>();
 			t.f0 = value.f0.f0;
@@ -285,6 +296,7 @@ public class UdfAnalyzerTest {
 
 	@ForwardedFields("field->field2;field2->field")
 	public static class Map16 implements MapFunction<MyPojo, MyPojo> {
+		@Override
 		public MyPojo map(MyPojo value) throws Exception {
 			MyPojo p = new MyPojo();
 			p.setField(value.getField2());
@@ -303,6 +315,7 @@ public class UdfAnalyzerTest {
 	public static class Map17 implements MapFunction<String, Tuple1<String>> {
 		private Tuple1<String> tuple = new Tuple1<String>();
 
+		@Override
 		public Tuple1<String> map(String value) throws Exception {
 			if (!tuple.f0.equals("")) {
 				tuple.f0 = "empty";
@@ -321,6 +334,7 @@ public class UdfAnalyzerTest {
 	public static class Map18 implements MapFunction<Tuple1<String>, ArrayList<String>> {
 		private ArrayList<String> list = new ArrayList<String>();
 
+		@Override
 		public ArrayList<String> map(Tuple1<String> value) throws Exception {
 			list.add(value.f0);
 			return list;

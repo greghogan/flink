@@ -224,6 +224,7 @@ public class DeltaIterationBase<ST, WT> extends DualInputOperator<ST, WT, ST, Ab
 	 * 
 	 * @return An empty map.
 	 */
+	@Override
 	public Map<String, Operator<?>> getBroadcastInputs() {
 		return Collections.emptyMap();
 	}
@@ -235,6 +236,7 @@ public class DeltaIterationBase<ST, WT> extends DualInputOperator<ST, WT, ST, Ab
 	 * @param name Ignored.
 	 * @param root Ignored.
 	 */
+	@Override
 	public void setBroadcastVariable(String name, Operator<?> root) {
 		throw new UnsupportedOperationException("The DeltaIteration meta operator cannot have broadcast inputs.");
 	}
@@ -245,6 +247,7 @@ public class DeltaIterationBase<ST, WT> extends DualInputOperator<ST, WT, ST, Ab
 	 * 
 	 * @param inputs Ignored
 	 */
+	@Override
 	public <X> void setBroadcastVariables(Map<String, Operator<X>> inputs) {
 		throw new UnsupportedOperationException("The DeltaIteration meta operator cannot have broadcast inputs.");
 	}

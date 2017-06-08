@@ -32,6 +32,7 @@ extends ParameterTestBase {
 
 	private BooleanParameter parameter;
 
+	@Override
 	@Before
 	public void setup() {
 		super.setup();

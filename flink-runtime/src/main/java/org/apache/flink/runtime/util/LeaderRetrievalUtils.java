@@ -199,6 +199,7 @@ public class LeaderRetrievalUtils {
 			if(leaderAddress != null && !leaderAddress.equals("") && !futureActorGateway.isCompleted()) {
 				AkkaUtils.getActorRefFuture(leaderAddress, actorSystem, timeout)
 					.map(new Mapper<ActorRef, ActorGateway>() {
+						@Override
 						public ActorGateway apply(ActorRef ref) {
 							return new AkkaActorGateway(ref, leaderSessionID);
 						}

@@ -86,6 +86,7 @@ public class PregelSSSP implements ProgramDescription {
 	@SuppressWarnings("serial")
 	private static final class InitVertices implements MapFunction<Long, Double> {
 
+		@Override
 		public Double map(Long id) {
 			return Double.POSITIVE_INFINITY;
 		}
@@ -103,6 +104,7 @@ public class PregelSSSP implements ProgramDescription {
 			this.srcId = src;
 		}
 
+		@Override
 		public void compute(Vertex<Long, Double> vertex, MessageIterator<Double> messages) {
 
 			double minDistance = (vertex.getId().equals(srcId)) ? 0d : Double.POSITIVE_INFINITY;
@@ -127,6 +129,7 @@ public class PregelSSSP implements ProgramDescription {
 	@SuppressWarnings("serial")
 	public static final class SSSPCombiner extends MessageCombiner<Long, Double> {
 
+		@Override
 		public void combineMessages(MessageIterator<Double> messages) {
 
 			double minMessage = Double.POSITIVE_INFINITY;

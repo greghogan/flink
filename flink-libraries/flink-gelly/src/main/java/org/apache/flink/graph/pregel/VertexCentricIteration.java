@@ -300,6 +300,7 @@ public class VertexCentricIteration<K, VV, EV, Message>
 			outTuple.f1 = nullMessage;
 		}
 
+		@Override
 		public Tuple2<K, Either<NullValue, Message>> map(Vertex<K, VV> vertex) {
 			outTuple.f0 = vertex.getId();
 			return outTuple;
@@ -469,6 +470,7 @@ public class VertexCentricIteration<K, VV, EV, Message>
 
 		private Tuple2<Vertex<K, VV>, Either<NullValue, Message>> outTuple = new Tuple2<>();
 
+		@Override
 		public Tuple2<Vertex<K, VV>, Either<NullValue, Message>> join(
 				Vertex<K, VV> vertex, Tuple2<K, Either<NullValue, Message>> message) {
 
@@ -482,6 +484,7 @@ public class VertexCentricIteration<K, VV, EV, Message>
 	private static final class ProjectNewVertexValue<K, VV, Message> implements
 		FlatMapFunction<Either<Vertex<K, VV>, Tuple2<K, Message>>, Vertex<K, VV>> {
 
+		@Override
 		public void flatMap(Either<Vertex<K, VV>, Tuple2<K, Message>> value,
 				Collector<Vertex<K, VV>> out) {
 
@@ -497,6 +500,7 @@ public class VertexCentricIteration<K, VV, EV, Message>
 
 		private Tuple2<K, Either<NullValue, Message>> outTuple = new Tuple2<>();
 
+		@Override
 		public void flatMap(Either<Vertex<K, VV>, Tuple2<K, Message>> value,
 				Collector<Tuple2<K, Either<NullValue, Message>>> out) {
 

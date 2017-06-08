@@ -378,6 +378,7 @@ extends GraphAlgorithmWrappingDataSet<K, VV, EV, Result<K>> {
 		 *
 		 * @return verbose string
 		 */
+		@Override
 		public String toPrintableString() {
 			return "1st vertex ID: " + getVertexId0()
 				+ ", 2nd vertex ID: " + getVertexId1()

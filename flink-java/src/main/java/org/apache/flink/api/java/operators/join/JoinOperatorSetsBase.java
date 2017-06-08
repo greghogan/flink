@@ -224,10 +224,12 @@ public class JoinOperatorSetsBase<I1, I2> {
 				this.defaultJoin = defaultJoin;
 			}
 
+			@Override
 			public <R> EquiJoin<I1, I2, R> with(JoinFunction<I1, I2, R> joinFunction) {
 				return defaultJoin.with(joinFunction);
 			}
 
+			@Override
 			public <R> EquiJoin<I1, I2, R> with(FlatJoinFunction<I1, I2, R> joinFunction) {
 				return defaultJoin.with(joinFunction);
 			}

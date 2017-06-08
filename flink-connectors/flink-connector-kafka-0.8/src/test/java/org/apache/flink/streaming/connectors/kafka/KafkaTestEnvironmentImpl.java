@@ -77,6 +77,7 @@ public class KafkaTestEnvironmentImpl extends KafkaTestEnvironment {
 	private Properties standardProps;
 	private Properties additionalServerProperties;
 
+	@Override
 	public String getBrokerConnectionString() {
 		return brokerConnectionString;
 	}

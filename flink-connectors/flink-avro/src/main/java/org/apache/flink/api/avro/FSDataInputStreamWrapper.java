@@ -41,10 +41,12 @@ public class FSDataInputStreamWrapper implements Closeable, SeekableInput {
 		this.len = len;
 	}
 
+	@Override
 	public long length() throws IOException {
 		return this.len;
 	}
 
+	@Override
 	public int read(byte[] b, int off, int len) throws IOException {
 		int read;
 		read = stream.read(b, off, len);
@@ -52,15 +54,18 @@ public class FSDataInputStreamWrapper implements Closeable, SeekableInput {
 		return read;
 	}
 
+	@Override
 	public void seek(long p) throws IOException {
 		stream.seek(p);
 		pos = p;
 	}
 
+	@Override
 	public long tell() throws IOException {
 		return pos;
 	}
 
+	@Override
 	public void close() throws IOException {
 		stream.close();
 	}

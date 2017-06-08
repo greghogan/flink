@@ -123,6 +123,7 @@ public class GSATranslationTest {
 	@SuppressWarnings("serial")
 	private static final class InitVertices implements MapFunction<Long, Long> {
 
+		@Override
 		public Long map(Long vertexId) {
 			return vertexId;
 		}
@@ -131,6 +132,7 @@ public class GSATranslationTest {
 	@SuppressWarnings("serial")
 	private static final class GatherNeighborIds extends GatherFunction<Long, NullValue, Long> {
 
+		@Override
 		public Long gather(Neighbor<Long, NullValue> neighbor) {
 			return neighbor.getNeighborValue();
 		}
@@ -139,6 +141,7 @@ public class GSATranslationTest {
 	@SuppressWarnings("serial")
 	private static final class SelectMinId extends SumFunction<Long, NullValue, Long> {
 
+		@Override
 		public Long sum(Long newValue, Long currentValue) {
 			return Math.min(newValue, currentValue);
 		}
@@ -147,6 +150,7 @@ public class GSATranslationTest {
 	@SuppressWarnings("serial")
 	private static final class UpdateComponentId extends ApplyFunction<Long, Long, Long> {
 
+		@Override
 		public void apply(Long summedValue, Long origValue) {
 			if (summedValue < origValue) {
 				setResult(summedValue);

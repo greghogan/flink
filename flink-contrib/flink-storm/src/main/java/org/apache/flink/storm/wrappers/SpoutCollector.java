@@ -79,6 +79,7 @@ class SpoutCollector<OUT> extends AbstractStormCollector<OUT> implements ISpoutO
 		throw new UnsupportedOperationException("Direct emit is not supported by Flink");
 	}
 
+	@Override
 	public long getPendingCount() {
 		return 0;
 	}

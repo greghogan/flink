@@ -731,6 +731,7 @@ public final class Record implements Value, CopyableValue<Record> {
 	/**
 	 * @param target
 	 */
+	@Override
 	public void copyTo(Record target) {
 		updateBinaryRepresenation();
 		

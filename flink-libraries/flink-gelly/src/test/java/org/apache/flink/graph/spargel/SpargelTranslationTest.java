@@ -74,6 +74,7 @@ public class SpargelTranslationTest {
 		Graph<String, Double, NullValue> graph = Graph.fromTupleDataSet(initialVertices,
 			edges.map(new MapFunction<Tuple2<String, String>, Tuple3<String, String, NullValue>>() {
 
+				@Override
 				public Tuple3<String, String, NullValue> map(
 					Tuple2<String, String> edge) {
 					return new Tuple3<>(edge.f0, edge.f1, NullValue.getInstance());
@@ -137,6 +138,7 @@ public class SpargelTranslationTest {
 		Graph<String, Double, NullValue> graph = Graph.fromTupleDataSet(initialVertices,
 			edges.map(new MapFunction<Tuple2<String, String>, Tuple3<String, String, NullValue>>() {
 
+				@Override
 				public Tuple3<String, String, NullValue> map(
 					Tuple2<String, String> edge) {
 					return new Tuple3<>(edge.f0, edge.f1, NullValue.getInstance());

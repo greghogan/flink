@@ -47,10 +47,12 @@ public class ChainedTerminationCriterionDriver<IT, OT> extends ChainedDriver<IT,
 
 	// --------------------------------------------------------------------------------------------
 
+	@Override
 	public RichFunction getStub() {
 		return null;
 	}
 
+	@Override
 	public String getTaskName() {
 		return "";
 	}

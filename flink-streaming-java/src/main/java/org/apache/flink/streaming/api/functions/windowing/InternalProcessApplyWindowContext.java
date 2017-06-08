@@ -56,6 +56,7 @@ public class InternalProcessApplyWindowContext<IN, OUT, KEY, W extends Window>
 		return context.currentWatermark();
 	}
 
+	@Override
 	public KeyedStateStore windowState() {
 		return context.windowState();
 	}

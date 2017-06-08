@@ -61,6 +61,7 @@ public class RuntimeUDFContextTest {
 			
 			try {
 				ctx.getBroadcastVariableWithInitializer("some name", new BroadcastVariableInitializer<Object, Object>() {
+					@Override
 					public Object initializeBroadcastVariable(Iterable<Object> data) { return null; }
 				});
 				

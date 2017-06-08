@@ -152,6 +152,7 @@ public final class TupleComparator<T extends Tuple> extends TupleComparatorBase<
 		return localIndex - index;
 	}
 
+	@Override
 	public TypeComparator<T> duplicate() {
 		return new TupleComparator<T>(this);
 	}

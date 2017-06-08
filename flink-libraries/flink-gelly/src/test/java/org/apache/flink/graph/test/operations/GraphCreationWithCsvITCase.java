@@ -188,6 +188,7 @@ public class GraphCreationWithCsvITCase extends MultipleProgramsTestBase {
 	/*----------------------------------------------------------------------------------------------------------------*/
 	@SuppressWarnings("serial")
 	private static final class AssignDoubleValueMapper implements MapFunction<Long, Double> {
+		@Override
 		public Double map(Long value) {
 			return 0.1d;
 		}

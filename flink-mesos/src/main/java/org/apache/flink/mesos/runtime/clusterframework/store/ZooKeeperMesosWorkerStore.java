@@ -85,6 +85,7 @@ public class ZooKeeperMesosWorkerStore implements MesosWorkerStore {
 		}
 	}
 
+	@Override
 	public void stop(boolean cleanup) throws Exception {
 		synchronized (startStopLock) {
 			if (isRunning) {

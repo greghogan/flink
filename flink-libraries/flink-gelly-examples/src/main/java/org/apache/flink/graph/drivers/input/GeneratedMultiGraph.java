@@ -48,6 +48,7 @@ extends GeneratedGraph<K> {
 	 * @param env Flink execution environment
 	 * @return input graph
 	 */
+	@Override
 	public Graph<K, NullValue, NullValue> create(ExecutionEnvironment env)
 			throws Exception {
 		Graph<K, NullValue, NullValue> graph = super.create(env);

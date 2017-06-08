@@ -30,6 +30,7 @@ public class DoubleValueSummaryAggregatorTest extends DoubleSummaryAggregatorTes
 	 * This method breaks the rule of "testing only one thing" by aggregating and combining
 	 * a bunch of different ways.
 	 */
+	@Override
 	protected NumericColumnSummary<Double> summarize(Double... values) {
 
 		DoubleValue[] doubleValues = new DoubleValue[values.length];

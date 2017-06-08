@@ -110,6 +110,7 @@ public abstract class MultipleIdsMessageAcknowledgingSourceBase<Type, UId, Sessi
 	 *                  means of de-duplicating messages when the acknowledgment after a checkpoint
 	 *                  fails.
 	 */
+	@Override
 	protected final void acknowledgeIDs(long checkpointId, List<UId> uniqueIds) {
 		LOG.debug("Acknowledging ids for checkpoint {}", checkpointId);
 		Iterator<Tuple2<Long, List<SessionId>>> iterator = sessionIdsPerSnapshot.iterator();

@@ -57,6 +57,7 @@ public class SolutionSetNode extends AbstractPartialSolutionNode {
 		}
 	}
 	
+	@Override
 	public WorksetIterationNode getIterationNode() {
 		return this.iterationNode;
 	}

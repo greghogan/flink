@@ -368,6 +368,7 @@ public class CrossOperator<I1, I2, OUT> extends TwoInputUdfOperator<I1, I2, OUT,
 			this.outTuple = outTupleInstance;
 		}
 
+		@Override
 		public R cross(T1 in1, T2 in2) {
 			for(int i=0; i<fields.length; i++) {
 				if(isFromFirst[i]) {

@@ -104,6 +104,7 @@ extends GeneratedMultiGraph<LongValue> {
 	 * @param env Flink execution environment
 	 * @return input graph
 	 */
+	@Override
 	public Graph<LongValue, NullValue, NullValue> generate(ExecutionEnvironment env) throws Exception {
 		int lp = littleParallelism.getValue().intValue();
 

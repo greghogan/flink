@@ -28,14 +28,17 @@ import static org.junit.Assert.assertTrue;
 public final class ReceiveCheckNoOpSink<T> extends RichSinkFunction<T> {
 	private List<T> received;
 
+	@Override
 	public void invoke(T tuple) {
 		received.add(tuple);
 	}
 
+	@Override
 	public void open(Configuration conf) {
 		received = new ArrayList<T>();
 	}
 
+	@Override
 	public void close() {
 		assertTrue(received.size() > 0);
 	}

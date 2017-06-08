@@ -66,6 +66,7 @@ public class PregelCompilerTest extends CompilerTestBase {
 			DataSet<Edge<Long, NullValue>> edges = env.fromElements(new Tuple2<>(1L, 2L))
 				.map(new MapFunction<Tuple2<Long, Long>, Edge<Long, NullValue>>() {
 
+					@Override
 					public Edge<Long, NullValue> map(Tuple2<Long, Long> edge) {
 						return new Edge<>(edge.f0, edge.f1, NullValue.getInstance());
 					}
@@ -131,6 +132,7 @@ public class PregelCompilerTest extends CompilerTestBase {
 			DataSet<Edge<Long, NullValue>> edges = env.fromElements(new Tuple2<>(1L, 2L))
 				.map(new MapFunction<Tuple2<Long, Long>, Edge<Long, NullValue>>() {
 
+					@Override
 					public Edge<Long, NullValue> map(Tuple2<Long, Long> edge) {
 						return new Edge<>(edge.f0, edge.f1, NullValue.getInstance());
 					}
@@ -197,6 +199,7 @@ public class PregelCompilerTest extends CompilerTestBase {
 			DataSet<Edge<Long, NullValue>> edges = env.fromElements(new Tuple2<>(1L, 2L))
 				.map(new MapFunction<Tuple2<Long, Long>, Edge<Long, NullValue>>() {
 
+					@Override
 					public Edge<Long, NullValue> map(Tuple2<Long, Long> edge) {
 						return new Edge<>(edge.f0, edge.f1, NullValue.getInstance());
 					}
@@ -271,6 +274,7 @@ public class PregelCompilerTest extends CompilerTestBase {
 	@SuppressWarnings("serial")
 	private static final class CCCombiner extends MessageCombiner<Long, Long> {
 
+		@Override
 		public void combineMessages(MessageIterator<Long> messages) {
 
 			long minMessage = Long.MAX_VALUE;

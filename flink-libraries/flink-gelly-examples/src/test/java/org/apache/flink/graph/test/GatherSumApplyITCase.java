@@ -119,6 +119,7 @@ public class GatherSumApplyITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class InitMapperSSSP implements MapFunction<Long, NullValue> {
+		@Override
 		public NullValue map(Long value) {
 			return NullValue.getInstance();
 		}

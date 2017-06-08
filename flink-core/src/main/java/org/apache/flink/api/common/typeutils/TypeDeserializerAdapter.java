@@ -52,18 +52,22 @@ public final class TypeDeserializerAdapter<T> extends TypeSerializer<T> {
 	// Forwarded deserialization related methods
 	// --------------------------------------------------------------------------------------------
 
+	@Override
 	public T deserialize(DataInputView source) throws IOException {
 		return deserializer.deserialize(source);
 	}
 
+	@Override
 	public T deserialize(T reuse, DataInputView source) throws IOException {
 		return deserializer.deserialize(reuse, source);
 	}
 
+	@Override
 	public TypeSerializer<T> duplicate() {
 		return deserializer.duplicate();
 	}
 
+	@Override
 	public int getLength() {
 		return deserializer.getLength();
 	}
@@ -72,6 +76,7 @@ public final class TypeDeserializerAdapter<T> extends TypeSerializer<T> {
 		return deserializer.equals(obj);
 	}
 
+	@Override
 	public boolean canEqual(Object obj) {
 		return deserializer.canEqual(obj);
 	}
@@ -84,41 +89,49 @@ public final class TypeDeserializerAdapter<T> extends TypeSerializer<T> {
 	// Irrelevant methods not intended for use
 	// --------------------------------------------------------------------------------------------
 
+	@Override
 	public boolean isImmutableType() {
 		throw new UnsupportedOperationException(
 			"This is a TypeDeserializerAdapter used only for deserialization; this method should not be used.");
 	}
 
+	@Override
 	public T createInstance() {
 		throw new UnsupportedOperationException(
 			"This is a TypeDeserializerAdapter used only for deserialization; this method should not be used.");
 	}
 
+	@Override
 	public T copy(T from) {
 		throw new UnsupportedOperationException(
 			"This is a TypeDeserializerAdapter used only for deserialization; this method should not be used.");
 	}
 
+	@Override
 	public T copy(T from, T reuse) {
 		throw new UnsupportedOperationException(
 			"This is a TypeDeserializerAdapter used only for deserialization; this method should not be used.");
 	}
 
+	@Override
 	public void serialize(T record, DataOutputView target) throws IOException {
 		throw new UnsupportedOperationException(
 			"This is a TypeDeserializerAdapter used only for deserialization; this method should not be used.");
 	}
 
+	@Override
 	public void copy(DataInputView source, DataOutputView target) throws IOException {
 		throw new UnsupportedOperationException(
 			"This is a TypeDeserializerAdapter used only for deserialization; this method should not be used.");
 	}
 
+	@Override
 	public TypeSerializerConfigSnapshot snapshotConfiguration() {
 		throw new UnsupportedOperationException(
 			"This is a TypeDeserializerAdapter used only for deserialization; this method should not be used.");
 	}
 
+	@Override
 	public CompatibilityResult<T> ensureCompatibility(TypeSerializerConfigSnapshot configSnapshot) {
 		throw new UnsupportedOperationException(
 			"This is a TypeDeserializerAdapter used only for deserialization; this method should not be used.");

@@ -74,6 +74,7 @@ public class CollectionExecutionIterationTest implements java.io.Serializable {
 			DataSet<Integer> iterationResult = iteration.map(new AddSuperstepNumberMapper());
 
 			DataSet<Integer> terminationCriterion = iterationResult.filter(new FilterFunction<Integer>() {
+				@Override
 				public boolean filter(Integer value) {
 					return value < 50;
 				}

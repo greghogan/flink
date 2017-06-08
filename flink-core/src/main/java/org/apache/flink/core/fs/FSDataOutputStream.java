@@ -78,6 +78,7 @@ public abstract class FSDataOutputStream extends OutputStream {
 	 * 
 	 * @throws IOException Thrown if an I/O error occurs while flushing the stream.
 	 */
+	@Override
 	public abstract void flush() throws IOException;
 
 	/**
@@ -112,5 +113,6 @@ public abstract class FSDataOutputStream extends OutputStream {
 	 * @throws IOException Thrown, if an error occurred while closing the stream or guaranteeing
 	 *                     that the data is persistent.
 	 */
+	@Override
 	public abstract void close() throws IOException;
 }

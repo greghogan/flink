@@ -28,5 +28,6 @@ import org.apache.flink.util.MutableObjectIterator;
  */
 public interface Sorter<E> extends CloseableInputProvider<E>
 {
+	@Override
 	MutableObjectIterator<E> getIterator() throws InterruptedException;
 }

@@ -349,18 +349,22 @@ public class SplitDataProperties<T> implements GenericDataSourceBase.SplitDataPr
 		return this;
 	}
 
+	@Override
 	public int[] getSplitPartitionKeys() {
 		return this.splitPartitionKeys;
 	}
 
+	@Override
 	public Partitioner<T> getSplitPartitioner() {
 		return this.splitPartitioner;
 	}
 
+	@Override
 	public int[] getSplitGroupKeys() {
 		return this.splitGroupKeys;
 	}
 
+	@Override
 	public Ordering getSplitOrder() {
 		return this.splitOrdering;
 	}

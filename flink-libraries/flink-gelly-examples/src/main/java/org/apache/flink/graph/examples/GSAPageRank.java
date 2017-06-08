@@ -116,6 +116,7 @@ public class GSAPageRank<K> implements GraphAlgorithm<K, Double, Double, DataSet
 	@SuppressWarnings("serial")
 	private static final class InitWeights implements EdgeJoinFunction<Double, LongValue> {
 
+		@Override
 		public Double edgeJoin(Double edgeValue, LongValue inputValue) {
 			return edgeValue / (double) inputValue.getValue();
 		}

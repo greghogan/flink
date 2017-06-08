@@ -766,6 +766,7 @@ public class ScatterGatherConfigurationITCase extends MultipleProgramsTestBase {
 	@SuppressWarnings("serial")
 	private static final class AssignOneMapper implements MapFunction<Vertex<Long, Long>, Long> {
 
+		@Override
 		public Long map(Vertex<Long, Long> value) {
 			return 1L;
 		}

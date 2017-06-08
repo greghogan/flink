@@ -57,6 +57,7 @@ public final class QuickSort implements IndexedSorter {
 	 * Sort the given range of items using quick sort. {@inheritDoc} If the recursion depth falls below
 	 * {@link #getMaxDepth}, then switch to {@link HeapSort}.
 	 */
+	@Override
 	public void sort(final IndexedSortable s, int p, int r) {
 		int recordsPerSegment = s.recordsPerSegment();
 		int recordSize = s.recordSize();
@@ -71,6 +72,7 @@ public final class QuickSort implements IndexedSorter {
 		sortInternal(s, recordsPerSegment, recordSize, maxOffset, p, pN, pO, r, rN, rO, getMaxDepth(r - p));
 	}
 
+	@Override
 	public void sort(IndexedSortable s) {
 		sort(s, 0, s.size());
 	}

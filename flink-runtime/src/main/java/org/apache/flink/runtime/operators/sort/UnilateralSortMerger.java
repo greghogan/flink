@@ -360,6 +360,7 @@ public class UnilateralSortMerger<E> implements Sorter<E> {
 
 		// exception handling
 		ExceptionHandler<IOException> exceptionHandler = new ExceptionHandler<IOException>() {
+			@Override
 			public void handleException(IOException exception) {
 				// forward exception
 				if (!closed) {
@@ -791,6 +792,7 @@ public class UnilateralSortMerger<E> implements Sorter<E> {
 		/**
 		 * Implements exception handling and delegates to go().
 		 */
+		@Override
 		public void run() {
 			try {
 				go();
@@ -897,6 +899,7 @@ public class UnilateralSortMerger<E> implements Sorter<E> {
 		 * The entry point for the thread. Gets a buffer for all threads and then loops as long as there is input
 		 * available.
 		 */
+		@Override
 		public void go() throws IOException {
 			
 			final MutableObjectIterator<E> reader = this.reader;
@@ -1104,6 +1107,7 @@ public class UnilateralSortMerger<E> implements Sorter<E> {
 		/**
 		 * Entry point of the thread.
 		 */
+		@Override
 		public void go() throws IOException {
 			boolean alive = true;
 
@@ -1211,6 +1215,7 @@ public class UnilateralSortMerger<E> implements Sorter<E> {
 		/**
 		 * Entry point of the thread.
 		 */
+		@Override
 		public void go() throws IOException {
 			
 			final Queue<CircularElement<E>> cache = new ArrayDeque<CircularElement<E>>();

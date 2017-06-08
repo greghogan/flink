@@ -3639,6 +3639,7 @@ public class CheckpointCoordinatorTest extends TestLogger {
 			super(taskID, parallelism, maxParallelism);
 		}
 
+		@Override
 		public void putState(int subtaskIndex, OperatorSubtaskState subtaskState) {
 			super.putState(subtaskIndex, spy(subtaskState));
 		}

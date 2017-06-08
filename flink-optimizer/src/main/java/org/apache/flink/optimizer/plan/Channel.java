@@ -205,6 +205,7 @@ public class Channel implements EstimateProvider, Cloneable, DumpableConnection<
 		return dataExchangeMode;
 	}
 
+	@Override
 	public ShipStrategyType getShipStrategy() {
 		return this.shipStrategy;
 	}

@@ -157,10 +157,12 @@ public class GroupCombineChainedDriver<IN, OUT> extends ChainedDriver<IN, OUT> {
 
 	// --------------------------------------------------------------------------------------------
 
+	@Override
 	public Function getStub() {
 		return this.reducer;
 	}
 
+	@Override
 	public String getTaskName() {
 		return this.taskName;
 	}

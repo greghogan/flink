@@ -98,6 +98,7 @@ public class ExecutionPlanCreationTest {
 
 			DataSet<Tuple2<Long, Long>> result = input.map(
 					new MapFunction<Tuple2<Long, Long>, Tuple2<Long, Long>>() {
+						@Override
 						public Tuple2<Long, Long> map(Tuple2<Long, Long> value){
 							return new Tuple2<Long, Long>(value.f0, value.f1 + 1);
 						}

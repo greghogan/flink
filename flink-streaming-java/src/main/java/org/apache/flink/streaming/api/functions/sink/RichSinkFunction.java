@@ -28,6 +28,7 @@ public abstract class RichSinkFunction<IN> extends AbstractRichFunction implemen
 
 	private static final long serialVersionUID = 1L;
 
+	@Override
 	public abstract void invoke(IN value) throws Exception;
 
 }

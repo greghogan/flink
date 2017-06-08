@@ -109,6 +109,7 @@ public final class TestData {
 			this.value = constant == null ? null : constant;
 		}
 
+		@Override
 		public Tuple2<Integer, String> next(Tuple2<Integer, String> reuse) {
 			this.key = nextKey();
 			if (this.valueMode != ValueMode.CONSTANT) {
@@ -118,6 +119,7 @@ public final class TestData {
 			return reuse;
 		}
 
+		@Override
 		public Tuple2<Integer, String> next() {
 			return next(new Tuple2<Integer, String>());
 		}

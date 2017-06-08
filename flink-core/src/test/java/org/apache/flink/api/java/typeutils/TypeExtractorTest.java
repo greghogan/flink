@@ -1003,6 +1003,7 @@ public class TypeExtractorTest {
 	public class OneAppender<T> extends RichMapFunction<T, Tuple2<T, Integer>> {
 		private static final long serialVersionUID = 1L;
 
+		@Override
 		public Tuple2<T, Integer> map(T value) {
 			return new Tuple2<T, Integer>(value, 1);
 		}
@@ -1050,6 +1051,7 @@ public class TypeExtractorTest {
 	public class FieldDuplicator<T> extends RichMapFunction<T, Tuple2<T, T>> {
 		private static final long serialVersionUID = 1L;
 
+		@Override
 		public Tuple2<T, T> map(T value) {
 			return new Tuple2<T, T>(value, value);
 		}

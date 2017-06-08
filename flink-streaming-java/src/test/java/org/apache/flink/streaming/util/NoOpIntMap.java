@@ -26,6 +26,7 @@ import org.apache.flink.api.common.functions.MapFunction;
 public class NoOpIntMap implements MapFunction<Integer, Integer> {
 	private static final long serialVersionUID = 1L;
 
+	@Override
 	public Integer map(Integer value) throws Exception {
 		return value;
 	}

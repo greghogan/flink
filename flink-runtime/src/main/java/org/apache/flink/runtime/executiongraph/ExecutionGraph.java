@@ -489,6 +489,7 @@ public class ExecutionGraph implements AccessExecutionGraph, Archiveable<Archive
 		return restartStrategy;
 	}
 
+	@Override
 	public JobCheckpointingSettings getJobCheckpointingSettings() {
 		if (checkpointStatsTracker != null) {
 			return checkpointStatsTracker.getSnapshottingSettings();

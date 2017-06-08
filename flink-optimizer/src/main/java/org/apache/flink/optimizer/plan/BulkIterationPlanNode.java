@@ -63,6 +63,7 @@ public class BulkIterationPlanNode extends SingleInputPlanNode implements Iterat
 
 	// --------------------------------------------------------------------------------------------
 	
+	@Override
 	public BulkIterationNode getIterationNode() {
 		if (this.template instanceof BulkIterationNode) {
 			return (BulkIterationNode) this.template;
@@ -94,6 +95,7 @@ public class BulkIterationPlanNode extends SingleInputPlanNode implements Iterat
 		this.serializerForIterationChannel = serializerForIterationChannel;
 	}
 
+	@Override
 	public void setCosts(Costs nodeCosts) {
 		// add the costs from the step function
 		nodeCosts.addCosts(this.rootOfStepFunction.getCumulativeCosts());
@@ -107,6 +109,7 @@ public class BulkIterationPlanNode extends SingleInputPlanNode implements Iterat
 		super.setCosts(nodeCosts);
 	}
 	
+	@Override
 	public int getMemoryConsumerWeight() {
 		return 1;
 	}

@@ -52,6 +52,7 @@ public class BooleanColumnSummary extends ColumnSummary {
 		return trueCount + falseCount;
 	}
 
+	@Override
 	public long getNullCount() {
 		return nullCount;
 	}

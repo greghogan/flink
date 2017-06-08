@@ -137,6 +137,7 @@ public class NonReusingBlockResettableIterator<T> extends AbstractBlockResettabl
 	}
 	
 
+	@Override
 	public void reset() {
 		// a reset always goes to the read phase
 		this.readPhase = true;
@@ -195,6 +196,7 @@ public class NonReusingBlockResettableIterator<T> extends AbstractBlockResettabl
 	}
 	
 
+	@Override
 	public void close() {
 		// suggest that we are in the read phase. because nothing is in the current block,
 		// read requests will fail

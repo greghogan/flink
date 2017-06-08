@@ -94,6 +94,7 @@ public abstract class AbstractTableInputFormat<T> extends RichInputFormat<T, Tab
 	 * @param parameters The configuration that is to be used
 	 * @see Configuration
 	 */
+	@Override
 	public abstract void configure(Configuration parameters);
 
 	@Override
@@ -122,6 +123,7 @@ public abstract class AbstractTableInputFormat<T> extends RichInputFormat<T, Tab
 		scannedRows = 0;
 	}
 
+	@Override
 	public T nextRecord(T reuse) throws IOException {
 		if (resultScanner == null) {
 			throw new IOException("No table result scanner provided!");

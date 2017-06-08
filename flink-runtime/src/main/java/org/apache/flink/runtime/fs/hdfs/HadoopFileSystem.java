@@ -272,6 +272,7 @@ public final class HadoopFileSystem extends FileSystem implements HadoopFileSyst
 		return new Path(this.fs.getWorkingDirectory().toUri());
 	}
 
+	@Override
 	public Path getHomeDirectory() {
 		return new Path(this.fs.getHomeDirectory().toUri());
 	}

@@ -180,6 +180,7 @@ public class JoinWithVerticesITCase extends MultipleProgramsTestBase {
 	@SuppressWarnings("serial")
 	private static final class AddValuesMapper implements VertexJoinFunction<Long, Long> {
 
+		@Override
 		public Long vertexJoin(Long vertexValue, Long inputValue) {
 			return vertexValue + inputValue;
 		}
@@ -187,6 +188,7 @@ public class JoinWithVerticesITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class ProjectIdWithTrue implements MapFunction<Vertex<Long, Long>, Tuple2<Long, Boolean>> {
+		@Override
 		public Tuple2<Long, Boolean> map(Vertex<Long, Long> vertex) throws Exception {
 			return new Tuple2<>(vertex.getId(), true);
 		}
@@ -195,6 +197,7 @@ public class JoinWithVerticesITCase extends MultipleProgramsTestBase {
 	@SuppressWarnings("serial")
 	private static final class DoubleIfTrueMapper implements VertexJoinFunction<Long, Boolean> {
 
+		@Override
 		public Long vertexJoin(Long vertexValue, Boolean inputValue) {
 			if (inputValue) {
 				return vertexValue * 2;
@@ -207,6 +210,7 @@ public class JoinWithVerticesITCase extends MultipleProgramsTestBase {
 	@SuppressWarnings("serial")
 	private static final class ProjectSecondMapper implements VertexJoinFunction<Long, Long> {
 
+		@Override
 		public Long vertexJoin(Long vertexValue, Long inputValue) {
 			return inputValue;
 		}
@@ -216,6 +220,7 @@ public class JoinWithVerticesITCase extends MultipleProgramsTestBase {
 	private static final class CustomValueMapper implements VertexJoinFunction<Long,
 		DummyCustomParameterizedType<Float>> {
 
+		@Override
 		public Long vertexJoin(Long vertexValue, DummyCustomParameterizedType<Float> inputValue) {
 			return (long) inputValue.getIntField();
 		}

@@ -670,6 +670,7 @@ public abstract class AbstractStreamOperator<OUT>
 		}
 	}
 
+	@Override
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	public void setCurrentKey(Object key) {
 		if (keyedStateBackend != null) {
@@ -685,6 +686,7 @@ public abstract class AbstractStreamOperator<OUT>
 		}
 	}
 
+	@Override
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	public Object getCurrentKey() {
 		if (keyedStateBackend != null) {

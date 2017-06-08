@@ -112,6 +112,7 @@ public class DagConnection implements EstimateProvider, DumpableConnection<Optim
 	 * 
 	 * @return The source Node.
 	 */
+	@Override
 	public OptimizerNode getSource() {
 		return this.source;
 	}
@@ -130,6 +131,7 @@ public class DagConnection implements EstimateProvider, DumpableConnection<Optim
 	 * 
 	 * @return The connection's shipping strategy.
 	 */
+	@Override
 	public ShipStrategyType getShipStrategy() {
 		return this.shipStrategy;
 	}

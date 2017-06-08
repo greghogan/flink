@@ -177,9 +177,11 @@ public class UtilsTest {
 	private static class TestAppender extends AppenderSkeleton {
 		public final List<LoggingEvent> events = new ArrayList<>();
 
+		@Override
 		public void close() {
 		}
 
+		@Override
 		public boolean requiresLayout() {
 			return false;
 		}

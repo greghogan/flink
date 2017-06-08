@@ -44,6 +44,7 @@ import static org.apache.flink.runtime.operators.hash.NonReusingHashJoinIterator
  */
 public class ReusingReOpenableHashTableITCase extends ReOpenableHashTableTestBase {
 
+	@Override
 	protected void doTest(TestData.TupleGeneratorIterator buildInput, TestData.TupleGeneratorIterator probeInput, TupleGenerator bgen, TupleGenerator pgen) throws Exception {
 		// collect expected data
 		final Map<Integer, Collection<TupleMatch>> expectedFirstMatchesMap = joinTuples(collectTupleData(buildInput), collectTupleData(probeInput));

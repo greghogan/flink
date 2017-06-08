@@ -52,6 +52,7 @@ public class GroupReduceCompilationTest extends CompilerTestBase implements java
 			DataSet<Double> data = env.fromElements(0.2, 0.3, 0.4, 0.5).name("source");
 			
 			data.reduceGroup(new RichGroupReduceFunction<Double, Double>() {
+				@Override
 				public void reduce(Iterable<Double> values, Collector<Double> out) {}
 			}).name("reducer")
 			.output(new DiscardingOutputFormat<Double>()).name("sink");
@@ -147,6 +148,7 @@ public class GroupReduceCompilationTest extends CompilerTestBase implements java
 			data
 				.groupBy(1)
 				.reduceGroup(new RichGroupReduceFunction<Tuple2<String, Double>, Tuple2<String, Double>>() {
+				@Override
 				public void reduce(Iterable<Tuple2<String, Double>> values, Collector<Tuple2<String, Double>> out) {}
 			}).name("reducer")
 			.output(new DiscardingOutputFormat<Tuple2<String, Double>>()).name("sink");
@@ -251,9 +253,11 @@ public class GroupReduceCompilationTest extends CompilerTestBase implements java
 			
 			data
 				.groupBy(new KeySelector<Tuple2<String,Double>, String>() { 
+					@Override
 					public String getKey(Tuple2<String, Double> value) { return value.f0; }
 				})
 				.reduceGroup(new RichGroupReduceFunction<Tuple2<String, Double>, Tuple2<String, Double>>() {
+				@Override
 				public void reduce(Iterable<Tuple2<String, Double>> values, Collector<Tuple2<String, Double>> out) {}
 			}).name("reducer")
 			.output(new DiscardingOutputFormat<Tuple2<String, Double>>()).name("sink");
@@ -309,6 +313,7 @@ public class GroupReduceCompilationTest extends CompilerTestBase implements java
 			
 			GroupReduceOperator<Tuple2<String, Double>, Tuple2<String, Double>> reduced = data
 				.groupBy(new KeySelector<Tuple2<String,Double>, String>() { 
+					@Override
 					public String getKey(Tuple2<String, Double> value) { return value.f0; }
 				})
 				.reduceGroup(new CombineReducer()).name("reducer");

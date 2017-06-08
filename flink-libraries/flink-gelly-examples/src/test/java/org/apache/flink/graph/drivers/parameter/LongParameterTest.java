@@ -38,6 +38,7 @@ extends ParameterTestBase {
 
 	private LongParameter parameter;
 
+	@Override
 	@Before
 	public void setup() {
 		super.setup();

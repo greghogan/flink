@@ -40,6 +40,7 @@ public class BoundedInputStream extends InputStream {
 		this.delegate = delegate;
 	}
 
+	@Override
 	public int read() throws IOException {
 		if (endOffsetExclusive >= 0L && position >= endOffsetExclusive) {
 			return -1;
@@ -50,10 +51,12 @@ public class BoundedInputStream extends InputStream {
 		}
 	}
 
+	@Override
 	public int read(byte[] b) throws IOException {
 		return read(b, 0, b.length);
 	}
 
+	@Override
 	public int read(byte[] b, int off, int len) throws IOException {
 		if (endOffsetExclusive >= 0L && position >= endOffsetExclusive) {
 			return -1;
@@ -69,6 +72,7 @@ public class BoundedInputStream extends InputStream {
 		}
 	}
 
+	@Override
 	public long skip(long n) throws IOException {
 		long toSkip = endOffsetExclusive >= 0L ? Math.min(n, endOffsetExclusive - position) : n;
 		long skippedBytes = delegate.skip(toSkip);
@@ -76,6 +80,7 @@ public class BoundedInputStream extends InputStream {
 		return skippedBytes;
 	}
 
+	@Override
 	public int available() throws IOException {
 		return endOffsetExclusive >= 0L && position >= endOffsetExclusive ? 0 : delegate.available();
 	}
@@ -84,15 +89,18 @@ public class BoundedInputStream extends InputStream {
 		return delegate.toString();
 	}
 
+	@Override
 	public void close() throws IOException {
 		delegate.close();
 	}
 
+	@Override
 	public synchronized void reset() throws IOException {
 		delegate.reset();
 		position = mark;
 	}
 
+	@Override
 	public synchronized void mark(int readlimit) {
 		delegate.mark(readlimit);
 		mark = position;
@@ -106,6 +114,7 @@ public class BoundedInputStream extends InputStream {
 		this.endOffsetExclusive = endOffsetExclusive;
 	}
 
+	@Override
 	public boolean markSupported() {
 		return delegate.markSupported();
 	}

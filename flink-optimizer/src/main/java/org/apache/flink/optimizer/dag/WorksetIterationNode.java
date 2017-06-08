@@ -200,6 +200,7 @@ public class WorksetIterationNode extends TwoInputNode implements IterationNode 
 		nextWorkset.addOutgoingConnection(this.nextWorksetRootConnection);
 	}
 	
+	@Override
 	public int getCostWeight() {
 		return this.costWeight;
 	}
@@ -232,6 +233,7 @@ public class WorksetIterationNode extends TwoInputNode implements IterationNode 
 		return new EmptySemanticProperties();
 	}
 
+	@Override
 	protected void readStubAnnotations() {}
 	
 	@Override
@@ -504,6 +506,7 @@ public class WorksetIterationNode extends TwoInputNode implements IterationNode 
 	//                      Iteration Specific Traversals
 	// --------------------------------------------------------------------------------------------
 
+	@Override
 	public void acceptForStepFunction(Visitor<OptimizerNode> visitor) {
 		this.singleRoot.accept(visitor);
 	}

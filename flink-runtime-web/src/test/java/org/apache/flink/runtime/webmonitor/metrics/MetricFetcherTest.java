@@ -171,6 +171,7 @@ public class MetricFetcherTest extends TestLogger {
 	}
 
 	private static class CurrentThreadExecutor implements Executor {
+		@Override
 		public void execute(Runnable r) {
 			r.run();
 		}

@@ -37,6 +37,7 @@ public class ForwardPartitioner<T> extends StreamPartitioner<T> {
 		return returnArray;
 	}
 
+	@Override
 	public StreamPartitioner<T> copy() {
 		return this;
 	}

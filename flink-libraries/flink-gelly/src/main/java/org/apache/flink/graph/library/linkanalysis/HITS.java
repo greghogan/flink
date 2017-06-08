@@ -564,6 +564,7 @@ extends GraphAlgorithmWrappingDataSet<K, VV, EV, Result<K>> {
 			return f2;
 		}
 
+		@Override
 		public String toPrintableString() {
 			return "Vertex ID: " + getVertexId0()
 				+ ", hub score: " + getHubScore()

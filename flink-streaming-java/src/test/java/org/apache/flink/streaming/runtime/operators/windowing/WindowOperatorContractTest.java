@@ -2556,6 +2556,7 @@ public abstract class WindowOperatorContractTest extends TestLogger {
 			when(mockAssigner.isEventTime()).thenReturn(true);
 		}
 
+		@Override
 		public void advanceTime(OneInputStreamOperatorTestHarness testHarness, long timestamp) throws Exception {
 			testHarness.processWatermark(new Watermark(timestamp));
 		}
@@ -2656,6 +2657,7 @@ public abstract class WindowOperatorContractTest extends TestLogger {
 			when(mockAssigner.isEventTime()).thenReturn(false);
 		}
 
+		@Override
 		public void advanceTime(OneInputStreamOperatorTestHarness testHarness, long timestamp) throws Exception {
 			testHarness.setProcessingTime(timestamp);
 		}

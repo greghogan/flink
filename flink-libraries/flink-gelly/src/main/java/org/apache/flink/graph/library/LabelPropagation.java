@@ -96,6 +96,7 @@ public class LabelPropagation<K, VV extends Comparable<VV>, EV>
 			this.typeInformation = typeInformation;
 		}
 
+		@Override
 		public void sendMessages(Vertex<K, VV> vertex) {
 			sendMessageToAllNeighbors(vertex.getValue());
 		}
@@ -112,6 +113,7 @@ public class LabelPropagation<K, VV extends Comparable<VV>, EV>
 	 */
 	public static final class UpdateVertexLabel<K, VV extends Comparable<VV>> extends GatherFunction<K, VV, VV> {
 
+		@Override
 		public void updateVertex(Vertex<K, VV> vertex, MessageIterator<VV> inMessages) {
 			Map<VV, Long> labelsWithFrequencies = new HashMap<>();
 

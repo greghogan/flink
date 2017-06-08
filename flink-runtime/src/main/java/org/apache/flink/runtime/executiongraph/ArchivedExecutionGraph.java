@@ -210,6 +210,7 @@ public class ArchivedExecutionGraph implements AccessExecutionGraph, Serializabl
 		return null;
 	}
 
+	@Override
 	public JobCheckpointingSettings getJobCheckpointingSettings() {
 		return jobCheckpointingSettings;
 	}
@@ -228,6 +229,7 @@ public class ArchivedExecutionGraph implements AccessExecutionGraph, Serializabl
 		return archivedUserAccumulators;
 	}
 
+	@Override
 	public ArchivedExecutionConfig getArchivedExecutionConfig() {
 		return archivedExecutionConfig;
 	}

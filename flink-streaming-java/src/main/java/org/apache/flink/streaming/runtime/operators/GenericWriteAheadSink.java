@@ -122,6 +122,7 @@ public abstract class GenericWriteAheadSink<IN> extends AbstractStreamOperator<I
 		cleanRestoredHandles();
 	}
 
+	@Override
 	public void close() throws Exception {
 		committer.close();
 	}

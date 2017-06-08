@@ -53,6 +53,7 @@ public class ReduceTranslationTests implements java.io.Serializable {
 			DataSet<Tuple3<Double, StringValue, LongValue>> initialData = getSourceDataSet(env);
 			
 			initialData.reduce(new RichReduceFunction<Tuple3<Double,StringValue,LongValue>>() {
+				@Override
 				public Tuple3<Double, StringValue, LongValue> reduce(Tuple3<Double, StringValue, LongValue> value1, Tuple3<Double, StringValue, LongValue> value2) {
 					return value1;
 				}
@@ -94,6 +95,7 @@ public class ReduceTranslationTests implements java.io.Serializable {
 			initialData
 				.groupBy(2)
 				.reduce(new RichReduceFunction<Tuple3<Double,StringValue,LongValue>>() {
+					@Override
 					public Tuple3<Double, StringValue, LongValue> reduce(Tuple3<Double, StringValue, LongValue> value1, Tuple3<Double, StringValue, LongValue> value2) {
 						return value1;
 					}
@@ -136,11 +138,13 @@ public class ReduceTranslationTests implements java.io.Serializable {
 			
 			initialData
 				.groupBy(new KeySelector<Tuple3<Double,StringValue,LongValue>, StringValue>() {
+					@Override
 					public StringValue getKey(Tuple3<Double, StringValue, LongValue> value) {
 						return value.f1;
 					}
 				})
 				.reduce(new RichReduceFunction<Tuple3<Double,StringValue,LongValue>>() {
+					@Override
 					public Tuple3<Double, StringValue, LongValue> reduce(Tuple3<Double, StringValue, LongValue> value1, Tuple3<Double, StringValue, LongValue> value2) {
 						return value1;
 					}

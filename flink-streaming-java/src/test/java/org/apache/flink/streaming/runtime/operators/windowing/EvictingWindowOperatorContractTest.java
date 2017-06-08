@@ -44,6 +44,7 @@ import org.apache.flink.util.OutputTag;
  */
 public class EvictingWindowOperatorContractTest extends WindowOperatorContractTest {
 
+	@Override
 	protected <W extends Window, OUT> KeyedOneInputStreamOperatorTestHarness<Integer, Integer, OUT> createWindowOperator(
 			WindowAssigner<Integer, W> assigner,
 			Trigger<Integer, W> trigger,
@@ -84,6 +85,7 @@ public class EvictingWindowOperatorContractTest extends WindowOperatorContractTe
 				BasicTypeInfo.INT_TYPE_INFO);
 	}
 
+	@Override
 	protected <W extends Window, OUT> KeyedOneInputStreamOperatorTestHarness<Integer, Integer, OUT> createWindowOperator(
 			WindowAssigner<Integer, W> assigner,
 			Trigger<Integer, W> trigger,

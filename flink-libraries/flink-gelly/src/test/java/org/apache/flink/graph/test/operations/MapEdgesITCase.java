@@ -170,6 +170,7 @@ public class MapEdgesITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class AddOneMapper implements MapFunction<Edge<Long, Long>, Long> {
+		@Override
 		public Long map(Edge<Long, Long> edge) throws Exception {
 			return edge.getValue() + 1;
 		}
@@ -177,6 +178,7 @@ public class MapEdgesITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class ToStringMapper implements MapFunction<Edge<Long, Long>, String> {
+		@Override
 		public String map(Edge<Long, Long> edge) throws Exception {
 			return String.format("string(%d)", edge.getValue());
 		}
@@ -184,6 +186,7 @@ public class MapEdgesITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class ToTuple1Mapper implements MapFunction<Edge<Long, Long>, Tuple1<Long>> {
+		@Override
 		public Tuple1<Long> map(Edge<Long, Long> edge) throws Exception {
 			Tuple1<Long> tupleValue = new Tuple1<>();
 			tupleValue.setFields(edge.getValue());
@@ -193,6 +196,7 @@ public class MapEdgesITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class ToCustomTypeMapper implements MapFunction<Edge<Long, Long>, DummyCustomType> {
+		@Override
 		public DummyCustomType map(Edge<Long, Long> edge) throws Exception {
 			DummyCustomType dummyValue = new DummyCustomType();
 			dummyValue.setIntField(edge.getValue().intValue());
@@ -204,6 +208,7 @@ public class MapEdgesITCase extends MultipleProgramsTestBase {
 	private static final class ToCustomParametrizedTypeMapper implements MapFunction<Edge<Long, Long>,
 		DummyCustomParameterizedType<Double>> {
 
+		@Override
 		public DummyCustomParameterizedType<Double> map(Edge<Long, Long> edge) throws Exception {
 			DummyCustomParameterizedType<Double> dummyValue = new DummyCustomParameterizedType<>();
 			dummyValue.setIntField(edge.getValue().intValue());

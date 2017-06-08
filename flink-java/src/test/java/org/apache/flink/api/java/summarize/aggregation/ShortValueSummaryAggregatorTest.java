@@ -27,6 +27,7 @@ public class ShortValueSummaryAggregatorTest extends ShortSummaryAggregatorTest 
 	/**
 	 * Helper method for summarizing a list of values
 	 */
+	@Override
 	protected NumericColumnSummary<Short> summarize(Integer... values) {
 
 		ShortValue[] shortValues = new ShortValue[values.length];

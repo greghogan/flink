@@ -280,6 +280,7 @@ public class FieldSet implements Iterable<Integer> {
 	 * 
 	 * @return This objects reference, unmodified.
 	 */
+	@Override
 	public FieldSet clone() {
 		return this;
 	}

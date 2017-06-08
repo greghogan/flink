@@ -205,6 +205,7 @@ public class ReduceCompilationTest extends CompilerTestBase implements java.io.S
 			
 			data
 				.groupBy(new KeySelector<Tuple2<String,Double>, String>() { 
+					@Override
 					public String getKey(Tuple2<String, Double> value) { return value.f0; }
 				})
 				.reduce(new RichReduceFunction<Tuple2<String,Double>>() {
@@ -272,6 +273,7 @@ public class ReduceCompilationTest extends CompilerTestBase implements java.io.S
 
 			data
 				.groupBy(new KeySelector<Tuple2<String,Double>, String>() {
+					@Override
 					public String getKey(Tuple2<String, Double> value) { return value.f0; }
 				})
 				.reduce(new RichReduceFunction<Tuple2<String,Double>>() {

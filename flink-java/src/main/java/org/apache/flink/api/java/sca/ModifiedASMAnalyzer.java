@@ -44,10 +44,12 @@ public class ModifiedASMAnalyzer extends Analyzer {
 		this.interpreter = (NestedMethodAnalyzer) interpreter;
 	}
 
+	@Override
 	protected Frame newFrame(int nLocals, int nStack) {
 		return new ModifiedASMFrame(nLocals, nStack);
 	}
 
+	@Override
 	protected Frame newFrame(Frame src) {
 		return new ModifiedASMFrame(src);
 	}

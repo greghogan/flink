@@ -77,6 +77,7 @@ public class WorksetIterationPlanNode extends DualInputPlanNode implements Itera
 
 	// --------------------------------------------------------------------------------------------
 	
+	@Override
 	public WorksetIterationNode getIterationNode() {
 		if (this.template instanceof WorksetIterationNode) {
 			return (WorksetIterationNode) this.template;
@@ -149,6 +150,7 @@ public class WorksetIterationPlanNode extends DualInputPlanNode implements Itera
 
 	// --------------------------------------------------------------------------------------------
 	
+	@Override
 	public void setCosts(Costs nodeCosts) {
 		// add the costs from the step function
 		nodeCosts.addCosts(this.solutionSetDeltaPlanNode.getCumulativeCostsShare());
@@ -157,6 +159,7 @@ public class WorksetIterationPlanNode extends DualInputPlanNode implements Itera
 		super.setCosts(nodeCosts);
 	}
 	
+	@Override
 	public int getMemoryConsumerWeight() {
 		// solution set index and workset back channel
 		return 2;

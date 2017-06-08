@@ -255,6 +255,7 @@ public class GatherSumApplyConfigurationITCase extends MultipleProgramsTestBase 
 			Assert.assertEquals(5, getNumberOfVertices());
 		}
 
+		@Override
 		public Long gather(Neighbor<Long, Long> neighbor) {
 			return neighbor.getNeighborValue();
 		}
@@ -282,6 +283,7 @@ public class GatherSumApplyConfigurationITCase extends MultipleProgramsTestBase 
 			Assert.assertEquals(5, getNumberOfVertices());
 		}
 
+		@Override
 		public Long sum(Long newValue, Long currentValue) {
 			long superstep = getSuperstepNumber();
 			aggregator.aggregate(superstep);
@@ -311,6 +313,7 @@ public class GatherSumApplyConfigurationITCase extends MultipleProgramsTestBase 
 			Assert.assertEquals(5, getNumberOfVertices());
 		}
 
+		@Override
 		public void apply(Long summedValue, Long origValue) {
 			long superstep = getSuperstepNumber();
 			aggregator.aggregate(superstep);
@@ -328,6 +331,7 @@ public class GatherSumApplyConfigurationITCase extends MultipleProgramsTestBase 
 			Assert.assertEquals(-1, getNumberOfVertices());
 		}
 
+		@Override
 		public Long gather(Neighbor<Long, Long> neighbor) {
 			return neighbor.getNeighborValue();
 		}
@@ -336,6 +340,7 @@ public class GatherSumApplyConfigurationITCase extends MultipleProgramsTestBase 
 	@SuppressWarnings("serial")
 	private static final class DummySum extends SumFunction<Long, Long, Long> {
 
+		@Override
 		public Long sum(Long newValue, Long currentValue) {
 			return 0L;
 		}
@@ -344,6 +349,7 @@ public class GatherSumApplyConfigurationITCase extends MultipleProgramsTestBase 
 	@SuppressWarnings("serial")
 	private static final class DummyApply extends ApplyFunction<Long, Long, Long> {
 
+		@Override
 		public void apply(Long summedValue, Long origValue) {
 			setResult(origValue + 1);
 		}
@@ -352,6 +358,7 @@ public class GatherSumApplyConfigurationITCase extends MultipleProgramsTestBase 
 	@SuppressWarnings("serial")
 	private static final class AssignOneMapper implements MapFunction<Vertex<Long, Long>, Long> {
 
+		@Override
 		public Long map(Vertex<Long, Long> value) {
 			return 1L;
 		}

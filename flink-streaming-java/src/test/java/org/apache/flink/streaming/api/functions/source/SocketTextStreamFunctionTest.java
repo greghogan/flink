@@ -255,6 +255,7 @@ public class SocketTextStreamFunctionTest {
 			this.expectedData = expectedData;
 		}
 
+		@Override
 		public void run() {
 			try {
 				SourceFunction.SourceContext<String> ctx = new SourceFunction.SourceContext<String>() {

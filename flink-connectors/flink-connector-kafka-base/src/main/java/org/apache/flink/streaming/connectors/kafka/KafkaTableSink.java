@@ -100,6 +100,7 @@ public abstract class KafkaTableSink implements AppendStreamTableSink<Row> {
 		return new RowTypeInfo(getFieldTypes());
 	}
 
+	@Override
 	public String[] getFieldNames() {
 		return fieldNames;
 	}

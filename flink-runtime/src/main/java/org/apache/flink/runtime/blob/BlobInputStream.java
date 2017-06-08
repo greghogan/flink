@@ -165,6 +165,7 @@ final class BlobInputStream extends InputStream {
 		// This method does not do anything as the wrapped input stream may be used for multiple get operations.
 	}
 
+	@Override
 	public void mark(final int readlimit) {
 		// Do not do anything here
 	}

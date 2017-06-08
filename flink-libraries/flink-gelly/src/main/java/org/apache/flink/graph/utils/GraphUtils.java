@@ -61,6 +61,7 @@ public class GraphUtils {
 	@ForwardedFields("*")
 	public static final class IdentityMapper<T>
 	implements MapFunction<T, T> {
+		@Override
 		public T map(T value) {
 			return value;
 		}
@@ -75,6 +76,7 @@ public class GraphUtils {
 	 */
 	public static final class NonForwardingIdentityMapper<T>
 	implements MapFunction<T, T> {
+		@Override
 		public T map(T value) {
 			return value;
 		}

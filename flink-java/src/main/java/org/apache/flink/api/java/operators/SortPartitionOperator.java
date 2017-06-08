@@ -104,6 +104,7 @@ public class SortPartitionOperator<T> extends SingleInputOperator<T, T, SortPart
 	 * @param order The order of the additional sort order of the local partition sorting.
 	 * @return The DataSet with sorted local partitions.
 	 */
+	@Override
 	public SortPartitionOperator<T> sortPartition(int field, Order order) {
 		if (useKeySelector) {
 			throw new InvalidProgramException("Expression keys cannot be appended after a KeySelector");
@@ -125,6 +126,7 @@ public class SortPartitionOperator<T> extends SingleInputOperator<T, T, SortPart
 	 * @param order The order of the additional sort order of the local partition sorting.
 	 * @return The DataSet with sorted local partitions.
 	 */
+	@Override
 	public SortPartitionOperator<T> sortPartition(String field, Order order) {
 		if (useKeySelector) {
 			throw new InvalidProgramException("Expression keys cannot be appended after a KeySelector");
@@ -137,6 +139,7 @@ public class SortPartitionOperator<T> extends SingleInputOperator<T, T, SortPart
 		return this;
 	}
 
+	@Override
 	public <K> SortPartitionOperator<T> sortPartition(KeySelector<T, K> keyExtractor, Order order) {
 		throw new InvalidProgramException("KeySelector cannot be chained.");
 	}
@@ -163,6 +166,7 @@ public class SortPartitionOperator<T> extends SingleInputOperator<T, T, SortPart
 	//  Translation
 	// --------------------------------------------------------------------------------------------
 
+	@Override
 	protected org.apache.flink.api.common.operators.SingleInputOperator<?, T, ?> translateToDataFlow(Operator<T> input) {
 
 		String name = "Sort at " + sortLocationName;

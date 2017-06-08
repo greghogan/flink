@@ -51,10 +51,12 @@ public abstract class AbstractPartialSolutionNode extends OptimizerNode {
 	
 	// --------------------------------------------------------------------------------------------
 	
+	@Override
 	public boolean isOnDynamicPath() {
 		return true;
 	}
 	
+	@Override
 	public void identifyDynamicPath(int costWeight) {
 		this.onDynamicPath = true;
 		this.costWeight = costWeight;

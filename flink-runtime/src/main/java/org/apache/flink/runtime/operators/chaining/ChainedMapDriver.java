@@ -62,10 +62,12 @@ public class ChainedMapDriver<IT, OT> extends ChainedDriver<IT, OT> {
 
 	// --------------------------------------------------------------------------------------------
 
+	@Override
 	public Function getStub() {
 		return this.mapper;
 	}
 
+	@Override
 	public String getTaskName() {
 		return this.taskName;
 	}

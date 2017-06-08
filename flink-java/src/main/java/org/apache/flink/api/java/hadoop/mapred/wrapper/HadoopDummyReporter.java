@@ -65,6 +65,7 @@ public class HadoopDummyReporter implements Reporter {
 		return null;
 	}
 	// There should be an @Override, but some CDH4 dependency does not contain this method
+	@Override
 	public float getProgress() {
 		return 0;
 	}

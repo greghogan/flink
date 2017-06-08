@@ -300,6 +300,7 @@ extends GraphAlgorithmWrappingDataSet<K, VV, EV, Result<K>> {
 		 *
 		 * @return verbose string
 		 */
+		@Override
 		public String toPrintableString() {
 			return "Vertex ID: " + getVertexId0()
 				+ ", vertex degree: " + getDegree()

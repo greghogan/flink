@@ -286,6 +286,7 @@ public class AkkaRpcService implements RpcService {
 		return actorSystem.dispatcher();
 	}
 
+	@Override
 	public ScheduledExecutor getScheduledExecutor() {
 		return internalScheduledExecutor;
 	}

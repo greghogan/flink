@@ -64,6 +64,7 @@ public class SingleSourceShortestPaths<K, VV> implements GraphAlgorithm<K, VV, D
 			this.srcVertexId = srcId;
 		}
 
+		@Override
 		public Double map(Vertex<K, VV> value) {
 			if (value.f0.equals(srcVertexId)) {
 				return 0.0;

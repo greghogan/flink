@@ -45,6 +45,7 @@ public class BinaryUnionPlanNode extends DualInputPlanNode {
 		setParallelism(toSwapFrom.getParallelism());
 	}
 	
+	@Override
 	public BinaryUnionNode getOptimizerNode() {
 		return (BinaryUnionNode) this.template;
 	}

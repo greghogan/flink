@@ -219,6 +219,7 @@ public class Ordering implements Cloneable {
 	
 	// --------------------------------------------------------------------------------------------
 
+	@Override
 	public Ordering clone() {
 		Ordering newOrdering = new Ordering();
 		newOrdering.indexes = this.indexes;

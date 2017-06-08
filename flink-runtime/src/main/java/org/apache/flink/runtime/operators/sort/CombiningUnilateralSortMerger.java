@@ -193,6 +193,7 @@ public class CombiningUnilateralSortMerger<E> extends UnilateralSortMerger<E> {
 		/**
 		 * Entry point of the thread.
 		 */
+		@Override
 		public void go() throws IOException {
 			// ------------------- In-Memory Cache ------------------------
 			

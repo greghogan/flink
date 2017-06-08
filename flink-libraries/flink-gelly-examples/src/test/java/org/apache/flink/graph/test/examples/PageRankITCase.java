@@ -126,6 +126,7 @@ public class PageRankITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class InitMapper implements MapFunction<Long, Double> {
+		@Override
 		public Double map(Long value) {
 			return 1.0;
 		}

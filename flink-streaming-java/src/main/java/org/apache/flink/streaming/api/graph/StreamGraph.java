@@ -644,6 +644,7 @@ public class StreamGraph extends StreamingPlan {
 	/**
 	 * Gets the assembled {@link JobGraph}.
 	 */
+	@Override
 	@SuppressWarnings("deprecation")
 	public JobGraph getJobGraph() {
 		// temporarily forbid checkpointing for iterative jobs

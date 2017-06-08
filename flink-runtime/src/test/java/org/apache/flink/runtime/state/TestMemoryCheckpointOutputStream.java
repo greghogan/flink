@@ -37,6 +37,7 @@ final class TestMemoryCheckpointOutputStream extends MemCheckpointStreamFactory.
 		super.close();
 	}
 
+	@Override
 	public boolean isClosed() {
 		return this.closed;
 	}

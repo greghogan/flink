@@ -415,6 +415,7 @@ public class GatherSumApplyIteration<K, VV, EV, M> implements CustomUnaryOperati
 	private static final class ProjectKeyWithNeighborOUT<K, VV, EV> implements FlatJoinFunction<
 			Vertex<K, VV>, Edge<K, EV>, Tuple2<K, Neighbor<VV, EV>>> {
 
+		@Override
 		public void join(Vertex<K, VV> vertex, Edge<K, EV> edge, Collector<Tuple2<K, Neighbor<VV, EV>>> out) {
 			out.collect(new Tuple2<>(
 					edge.getTarget(), new Neighbor<>(vertex.getValue(), edge.getValue())));
@@ -426,6 +427,7 @@ public class GatherSumApplyIteration<K, VV, EV, M> implements CustomUnaryOperati
 	private static final class ProjectKeyWithNeighborIN<K, VV, EV> implements FlatJoinFunction<
 			Vertex<K, VV>, Edge<K, EV>, Tuple2<K, Neighbor<VV, EV>>> {
 
+		@Override
 		public void join(Vertex<K, VV> vertex, Edge<K, EV> edge, Collector<Tuple2<K, Neighbor<VV, EV>>> out) {
 			out.collect(new Tuple2<>(
 					edge.getSource(), new Neighbor<>(vertex.getValue(), edge.getValue())));

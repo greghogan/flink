@@ -36,6 +36,7 @@ class HadoopSecurityContext implements SecurityContext {
 		this.ugi = Preconditions.checkNotNull(ugi, "UGI passed cannot be null");
 	}
 
+	@Override
 	public <T> T runSecured(final Callable<T> securedCallable) throws Exception {
 		return ugi.doAs(new PrivilegedExceptionAction<T>() {
 			@Override

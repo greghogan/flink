@@ -210,6 +210,7 @@ public class GraphCreationITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class AssignIdAsValueMapper implements MapFunction<Long, Long> {
+		@Override
 		public Long map(Long vertexId) {
 			return vertexId;
 		}
@@ -221,6 +222,7 @@ public class GraphCreationITCase extends MultipleProgramsTestBase {
 
 		DummyCustomParameterizedType<Double> dummyValue = new DummyCustomParameterizedType<>();
 
+		@Override
 		public DummyCustomParameterizedType<Double> map(Long vertexId) {
 			dummyValue.setIntField(vertexId.intValue() - 1);
 			dummyValue.setTField(vertexId * 2.0);
@@ -230,6 +232,7 @@ public class GraphCreationITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class BooMapper implements MapFunction<Long, String> {
+		@Override
 		public String map(Long value) {
 			return "boo";
 		}

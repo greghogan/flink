@@ -133,6 +133,7 @@ public class GraphCreationWithMapperITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class AssignDoubleValueMapper implements MapFunction<Long, Double> {
+		@Override
 		public Double map(Long value) {
 			return 0.1d;
 		}
@@ -140,6 +141,7 @@ public class GraphCreationWithMapperITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class AssignTuple2ValueMapper implements MapFunction<Long, Tuple2<Long, Long>> {
+		@Override
 		public Tuple2<Long, Long> map(Long vertexId) {
 			return new Tuple2<>(vertexId * 2, 42L);
 		}
@@ -147,6 +149,7 @@ public class GraphCreationWithMapperITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class AssignDoubleConstantMapper implements MapFunction<String, Double> {
+		@Override
 		public Double map(String value) {
 			return 0.1d;
 		}
@@ -154,6 +157,7 @@ public class GraphCreationWithMapperITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class AssignCustomValueMapper implements MapFunction<Long, DummyCustomType> {
+		@Override
 		public DummyCustomType map(Long vertexId) {
 			return new DummyCustomType(vertexId.intValue() - 1, false);
 		}

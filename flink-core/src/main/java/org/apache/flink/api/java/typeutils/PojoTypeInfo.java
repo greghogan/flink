@@ -278,6 +278,7 @@ public class PojoTypeInfo<T> extends CompositeType<T> {
 		return this.fields[pos];
 	}
 
+	@Override
 	@PublicEvolving
 	public String[] getFieldNames() {
 		String[] result = new String[fields.length];

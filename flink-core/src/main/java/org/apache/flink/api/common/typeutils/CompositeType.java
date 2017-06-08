@@ -52,6 +52,7 @@ public abstract class CompositeType<T> extends TypeInformation<T> {
 	 *
 	 * @return Type class of the composite type
 	 */
+	@Override
 	@PublicEvolving
 	public Class<T> getTypeClass() {
 		return typeClass;

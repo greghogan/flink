@@ -427,6 +427,7 @@ public class InPlaceMutableHashTable<T> extends AbstractMutableHashTable<T> {
 		return new EntryIterator();
 	}
 
+	@Override
 	public <PT> HashTableProber<PT> getProber(TypeComparator<PT> probeTypeComparator, TypePairComparator<PT, T> pairComparator) {
 		return new HashTableProber<>(probeTypeComparator, pairComparator);
 	}

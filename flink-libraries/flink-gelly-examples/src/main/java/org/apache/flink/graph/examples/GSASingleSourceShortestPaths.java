@@ -98,6 +98,7 @@ public class GSASingleSourceShortestPaths implements ProgramDescription {
 			this.srcId = srcId;
 		}
 
+		@Override
 		public Double map(Long id) {
 			if (id.equals(srcId)) {
 				return 0.0;
@@ -111,6 +112,7 @@ public class GSASingleSourceShortestPaths implements ProgramDescription {
 	@SuppressWarnings("serial")
 	private static final class CalculateDistances extends GatherFunction<Double, Double, Double> {
 
+		@Override
 		public Double gather(Neighbor<Double, Double> neighbor) {
 			return neighbor.getNeighborValue() + neighbor.getEdgeValue();
 		}
@@ -119,6 +121,7 @@ public class GSASingleSourceShortestPaths implements ProgramDescription {
 	@SuppressWarnings("serial")
 	private static final class ChooseMinDistance extends SumFunction<Double, Double, Double> {
 
+		@Override
 		public Double sum(Double newValue, Double currentValue) {
 			return Math.min(newValue, currentValue);
 		}
@@ -127,6 +130,7 @@ public class GSASingleSourceShortestPaths implements ProgramDescription {
 	@SuppressWarnings("serial")
 	private static final class UpdateDistance extends ApplyFunction<Long, Double, Double> {
 
+		@Override
 		public void apply(Double newDistance, Double oldDistance) {
 			if (newDistance < oldDistance) {
 				setResult(newDistance);

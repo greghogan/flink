@@ -263,12 +263,14 @@ public class DataSourceTaskTest extends TaskTestBase {
 			return target;
 		}
 
+		@Override
 		public void openInputFormat() {
 			//ensure this is called only once
 			Assert.assertFalse("Invalid status of the input format. Expected for opened: false, Actual: " + opened, opened);
 			opened = true;
 		}
 
+		@Override
 		public void closeInputFormat() {
 			//ensure this is called only once
 			Assert.assertFalse("Invalid status of the input format. Expected for closed: false, Actual: " + closed, closed);

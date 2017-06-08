@@ -125,15 +125,18 @@ public class DependencyConnectedComponentsITCase extends JavaProgramTestBase {
 			DataSet<Long> candidates = iteration.getWorkset().join(edges).where(0).equalTo(0)
 					.with(new FindCandidatesJoin())
 					.groupBy(new KeySelector<Long, Long>() { 
-                        public Long getKey(Long id) { return id; } 
+                        @Override
+						public Long getKey(Long id) { return id; }
                       }).reduceGroup(new RemoveDuplicatesReduce());
 			
 			DataSet<Tuple2<Long, Long>> candidatesDependencies = 
 					candidates.join(edges)
 					.where(new KeySelector<Long, Long>() { 
-                        public Long getKey(Long id) { return id; } 
+                        @Override
+						public Long getKey(Long id) { return id; }
                       }).equalTo(new KeySelector<Tuple2<Long, Long>, Long>() { 
-                        public Long getKey(Tuple2<Long, Long> vertexWithId) 
+                        @Override
+						public Long getKey(Tuple2<Long, Long> vertexWithId)
                         { return vertexWithId.f1; } 
                       }).with(new FindCandidatesDependenciesJoin());
 			

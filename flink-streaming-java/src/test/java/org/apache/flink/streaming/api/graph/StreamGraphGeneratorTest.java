@@ -492,10 +492,12 @@ public class StreamGraphGeneratorTest {
 	static class NoOpIntCoMap implements CoMapFunction<Integer, Integer, Integer> {
 		private static final long serialVersionUID = 1886595528149124270L;
 
+		@Override
 		public Integer map1(Integer value) throws Exception {
 			return value;
 		}
 
+		@Override
 		public Integer map2(Integer value) throws Exception {
 			return value;
 		}

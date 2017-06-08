@@ -165,6 +165,7 @@ public class DistinctTranslationTest {
 			DataSet<Tuple3<Double, StringValue, LongValue>> initialData = getSourceDataSet(env);
 
 			initialData.distinct(new KeySelector<Tuple3<Double,StringValue,LongValue>, StringValue>() {
+				@Override
 				public StringValue getKey(Tuple3<Double, StringValue, LongValue> value) {
 					return value.f1;
 				}

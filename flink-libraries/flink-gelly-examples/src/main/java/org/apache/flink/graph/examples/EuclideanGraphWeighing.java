@@ -91,6 +91,7 @@ public class EuclideanGraphWeighing implements ProgramDescription {
 		Graph<Long, Point, Double> resultedGraph = graph.joinWithEdges(edgesWithEuclideanWeight,
 				new EdgeJoinFunction<Double, Double>() {
 
+					@Override
 					public Double edgeJoin(Double edgeValue, Double inputValue) {
 						return inputValue;
 					}

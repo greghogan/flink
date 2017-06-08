@@ -58,6 +58,7 @@ public class WordCountSimplePOJOITCase extends JavaProgramTestBase implements Se
 				.reduce(new ReduceFunction<WC>() {
 					private static final long serialVersionUID = 1L;
 
+					@Override
 					public WC reduce(WC value1, WC value2) {
 						return new WC(value1.word, value1.count + value2.count);
 					}

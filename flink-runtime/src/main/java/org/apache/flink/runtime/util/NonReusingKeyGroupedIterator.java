@@ -65,6 +65,7 @@ public final class NonReusingKeyGroupedIterator<E> implements KeyGroupedIterator
 	 * 
 	 * @return true, if the input iterator has an other group of records with the same key.
 	 */
+	@Override
 	public boolean nextKey() throws IOException {
 		
 		if (lookahead != null) {
@@ -149,6 +150,7 @@ public final class NonReusingKeyGroupedIterator<E> implements KeyGroupedIterator
 		}
 	}
 	
+	@Override
 	public E getCurrent() {
 		return lastKeyRecord;
 	}

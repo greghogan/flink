@@ -37,10 +37,12 @@ public class NonReusingDeserializationDelegate<T> implements DeserializationDele
 		this.serializer = serializer;
 	}
 	
+	@Override
 	public void setInstance(T instance) {
 		this.instance = instance;
 	}
 
+	@Override
 	public T getInstance() {
 		return instance;
 	}

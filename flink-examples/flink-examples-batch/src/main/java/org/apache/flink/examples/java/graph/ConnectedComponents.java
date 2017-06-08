@@ -187,6 +187,7 @@ public class ConnectedComponents {
 		if (params.has("vertices")) {
 			return env.readCsvFile(params.get("vertices")).types(Long.class).map(
 				new MapFunction<Tuple1<Long>, Long>() {
+					@Override
 					public Long map(Tuple1<Long> value) {
 						return value.f0;
 					}

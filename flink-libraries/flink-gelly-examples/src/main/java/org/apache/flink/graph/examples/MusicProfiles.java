@@ -122,6 +122,7 @@ public class MusicProfiles implements ProgramDescription {
 				.getEdges()
 				// filter out user-song edges that are below the playcount threshold
 				.filter(new FilterFunction<Edge<String, Integer>>() {
+					@Override
 					public boolean filter(Edge<String, Integer> edge) {
 						return (edge.getValue() > playcountThreshold);
 					}
@@ -130,6 +131,7 @@ public class MusicProfiles implements ProgramDescription {
 
 		Graph<String, Long, NullValue> similarUsersGraph = Graph.fromDataSet(similarUsers,
 				new MapFunction<String, Long>() {
+					@Override
 					public Long map(String value) {
 						return 1L;
 					}
@@ -151,6 +153,7 @@ public class MusicProfiles implements ProgramDescription {
 		DataSet<Vertex<String, Long>> verticesWithCommunity = similarUsersGraph
 				.joinWithVertices(idsWithInitialLabels,
 						new VertexJoinFunction<Long, Long>() {
+							@Override
 							public Long vertexJoin(Long vertexValue, Long inputValue) {
 								return inputValue;
 							}
@@ -169,6 +172,7 @@ public class MusicProfiles implements ProgramDescription {
 
 	private static final class ExtractMismatchSongIds implements MapFunction<String, Tuple1<String>> {
 
+		@Override
 		public Tuple1<String> map(String value) {
 			String[] tokens = value.split("\\s+");
 			String songId = tokens[1].substring(1);
@@ -179,6 +183,7 @@ public class MusicProfiles implements ProgramDescription {
 	private static final class FilterOutMismatches implements CoGroupFunction<Tuple3<String, String, Integer>,
 		Tuple1<String>, Tuple3<String, String, Integer>> {
 
+		@Override
 		public void coGroup(Iterable<Tuple3<String, String, Integer>> triplets,
 				Iterable<Tuple1<String>> invalidSongs, Collector<Tuple3<String, String, Integer>> out) {
 
@@ -192,6 +197,7 @@ public class MusicProfiles implements ProgramDescription {
 	}
 
 	private static final class FilterSongNodes implements FilterFunction<Tuple2<String, String>> {
+		@Override
 		public boolean filter(Tuple2<String, String> value) throws Exception {
 			return !value.f1.equals("");
 		}
@@ -200,6 +206,7 @@ public class MusicProfiles implements ProgramDescription {
 	private static final class GetTopSongPerUser	implements EdgesFunctionWithVertexValue<String, NullValue, Integer,
 		Tuple2<String, String>> {
 
+		@Override
 		public void iterateEdges(Vertex<String, NullValue> vertex,
 				Iterable<Edge<String, Integer>> edges, Collector<Tuple2<String, String>> out) throws Exception {
 
@@ -218,6 +225,7 @@ public class MusicProfiles implements ProgramDescription {
 	private static final class CreateSimilarUserEdges implements GroupReduceFunction<Edge<String, Integer>,
 		Edge<String, NullValue>> {
 
+		@Override
 		public void reduce(Iterable<Edge<String, Integer>> edges, Collector<Edge<String, NullValue>> out) {
 			List<String> listeners = new ArrayList<String>();
 			for (Edge<String, Integer> edge : edges) {

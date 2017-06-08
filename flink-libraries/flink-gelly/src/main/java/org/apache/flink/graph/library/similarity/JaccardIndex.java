@@ -562,6 +562,7 @@ extends GraphAlgorithmWrappingDataSet<K, VV, EV, Result<K>> {
 			return getSharedNeighborCount().getValue() / (double) getDistinctNeighborCount().getValue();
 		}
 
+		@Override
 		public String toPrintableString() {
 			return "Vertex IDs: (" + getVertexId0() + ", " + getVertexId1()
 				+ "), number of shared neighbors: " + getSharedNeighborCount()

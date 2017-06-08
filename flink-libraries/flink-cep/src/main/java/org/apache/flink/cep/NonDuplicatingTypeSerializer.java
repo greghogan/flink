@@ -116,6 +116,7 @@ public final class NonDuplicatingTypeSerializer<T> extends TypeSerializer<T> {
 	 *
 	 * @throws IOException
 	 */
+	@Override
 	public void serialize(T record, DataOutputView target) throws IOException {
 		if (identityMap.containsKey(record)) {
 			target.writeBoolean(true);
@@ -136,6 +137,7 @@ public final class NonDuplicatingTypeSerializer<T> extends TypeSerializer<T> {
 	 * @return The deserialized object
 	 * @throws IOException
 	 */
+	@Override
 	public T deserialize(DataInputView source) throws IOException {
 		boolean alreadyRead = source.readBoolean();
 

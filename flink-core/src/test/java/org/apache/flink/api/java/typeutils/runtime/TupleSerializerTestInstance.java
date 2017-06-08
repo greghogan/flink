@@ -35,6 +35,7 @@ public class TupleSerializerTestInstance<T extends Tuple> extends SerializerTest
 		super(serializer, typeClass, length, testData);
 	}
 	
+	@Override
 	protected void deepEquals(String message, T shouldTuple, T isTuple) {
 		Assert.assertEquals(shouldTuple.getArity(), isTuple.getArity());
 		

@@ -65,6 +65,7 @@ public class CassandraTupleWriteAheadSink<IN extends Tuple> extends GenericWrite
 		ClosureCleaner.clean(builder, true);
 	}
 
+	@Override
 	public void open() throws Exception {
 		super.open();
 		if (!getRuntimeContext().isCheckpointingEnabled()) {

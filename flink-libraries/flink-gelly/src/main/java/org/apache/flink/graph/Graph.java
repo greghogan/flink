@@ -189,6 +189,7 @@ public class Graph<K, VV, EV> {
 	implements FlatMapFunction<Edge<K, EV>, Vertex<K, NullValue>> {
 		private Vertex<K, NullValue> output = new Vertex<>(null, NullValue.getInstance());
 
+		@Override
 		public void flatMap(Edge<K, EV> edge, Collector<Vertex<K, NullValue>> out) {
 			output.f0 = edge.f0;
 			out.collect(output);
@@ -228,6 +229,7 @@ public class Graph<K, VV, EV> {
 			.map(new MapFunction<Tuple1<K>, Vertex<K, VV>>() {
 				private Vertex<K, VV> output = new Vertex<>();
 
+				@Override
 				public Vertex<K, VV> map(Tuple1<K> value) throws Exception {
 					output.f0 = value.f0;
 					output.f1 = vertexValueInitializer.map(value.f0);
@@ -242,6 +244,7 @@ public class Graph<K, VV, EV> {
 	implements FlatMapFunction<Edge<K, EV>, Tuple1<K>> {
 		private Tuple1<K> output = new Tuple1<>();
 
+		@Override
 		public void flatMap(Edge<K, EV> edge, Collector<Tuple1<K>> out) {
 			output.f0 = edge.f0;
 			out.collect(output);
@@ -555,6 +558,7 @@ public class Graph<K, VV, EV> {
 				new MapFunction<Vertex<K, VV>, Vertex<K, NV>>() {
 					private Vertex<K, NV> output = new Vertex<>();
 
+					@Override
 					public Vertex<K, NV> map(Vertex<K, VV> value) throws Exception {
 						output.f0 = value.f0;
 						output.f1 = mapper.map(value);
@@ -605,6 +609,7 @@ public class Graph<K, VV, EV> {
 			new MapFunction<Edge<K, EV>, Edge<K, NV>>() {
 				private Edge<K, NV> output = new Edge<>();
 
+				@Override
 				public Edge<K, NV> map(Edge<K, EV> value) throws Exception {
 					output.f0 = value.f0;
 					output.f1 = value.f1;
@@ -913,6 +918,7 @@ public class Graph<K, VV, EV> {
 	@ForwardedFieldsFirst("f0; f1; f2")
 	private static final class ProjectEdge<K, VV, EV> implements FlatJoinFunction<
 		Edge<K, EV>, Vertex<K, VV>, Edge<K, EV>> {
+		@Override
 		public void join(Edge<K, EV> first, Vertex<K, VV> second, Collector<Edge<K, EV>> out) {
 			out.collect(first);
 		}
@@ -935,6 +941,7 @@ public class Graph<K, VV, EV> {
 
 		private Tuple2<K, LongValue> vertexDegree = new Tuple2<>(null, degree);
 
+		@Override
 		@SuppressWarnings("unused")
 		public void coGroup(Iterable<Vertex<K, VV>> vertex, Iterable<Edge<K, EV>> outEdges,
 				Collector<Tuple2<K, LongValue>> out) {
@@ -1132,6 +1139,7 @@ public class Graph<K, VV, EV> {
 			this.fieldPosition = position;
 		}
 
+		@Override
 		@SuppressWarnings("unchecked")
 		public Tuple2<K, Edge<K, EV>> map(Edge<K, EV> edge) {
 			return new Tuple2<>((K) edge.getField(fieldPosition), edge);
@@ -1147,6 +1155,7 @@ public class Graph<K, VV, EV> {
 			this.fieldPosition = position;
 		}
 
+		@Override
 		@SuppressWarnings("unchecked")
 		public Tuple2<K, EV> map(Edge<K, EV> edge) {
 			return new Tuple2<>((K) edge.getField(fieldPosition), edge.getValue());
@@ -1161,6 +1170,7 @@ public class Graph<K, VV, EV> {
 			this.function = fun;
 		}
 
+		@Override
 		public void reduce(Iterable<Tuple2<K, Edge<K, EV>>> edges, Collector<T> out) throws Exception {
 			function.iterateEdges(edges, out);
 		}
@@ -1169,6 +1179,7 @@ public class Graph<K, VV, EV> {
 	private static final class EmitOneEdgePerNode<K, EV> implements FlatMapFunction<
 		Edge<K, EV>, Tuple2<K, Edge<K, EV>>> {
 
+		@Override
 		public void flatMap(Edge<K, EV> edge, Collector<Tuple2<K, Edge<K, EV>>> out) {
 			out.collect(new Tuple2<>(edge.getSource(), edge));
 			out.collect(new Tuple2<>(edge.getTarget(), edge));
@@ -1178,6 +1189,7 @@ public class Graph<K, VV, EV> {
 	private static final class EmitOneVertexWithEdgeValuePerNode<K, EV>	implements FlatMapFunction<
 		Edge<K, EV>, Tuple2<K, EV>> {
 
+		@Override
 		public void flatMap(Edge<K, EV> edge, Collector<Tuple2<K, EV>> out) {
 			out.collect(new Tuple2<>(edge.getSource(), edge.getValue()));
 			out.collect(new Tuple2<>(edge.getTarget(), edge.getValue()));
@@ -1187,6 +1199,7 @@ public class Graph<K, VV, EV> {
 	private static final class EmitOneEdgeWithNeighborPerNode<K, EV> implements FlatMapFunction<
 		Edge<K, EV>, Tuple3<K, K, Edge<K, EV>>> {
 
+		@Override
 		public void flatMap(Edge<K, EV> edge, Collector<Tuple3<K, K, Edge<K, EV>>> out) {
 			out.collect(new Tuple3<>(edge.getSource(), edge.getTarget(), edge));
 			out.collect(new Tuple3<>(edge.getTarget(), edge.getSource(), edge));
@@ -1202,6 +1215,7 @@ public class Graph<K, VV, EV> {
 			this.function = fun;
 		}
 
+		@Override
 		public void coGroup(Iterable<Vertex<K, VV>> vertex,
 				Iterable<Edge<K, EV>> edges, Collector<T> out) throws Exception {
 
@@ -1230,6 +1244,7 @@ public class Graph<K, VV, EV> {
 			this.function = fun;
 		}
 
+		@Override
 		public void coGroup(Iterable<Vertex<K, VV>> vertex, final Iterable<Tuple2<K, Edge<K, EV>>> keysWithEdges,
 				Collector<T> out) throws Exception {
 
@@ -1254,6 +1269,7 @@ public class Graph<K, VV, EV> {
 			};
 
 			Iterable<Edge<K, EV>> edgesIterable = new Iterable<Edge<K, EV>>() {
+				@Override
 				public Iterator<Edge<K, EV>> iterator() {
 					return edgesIterator;
 				}
@@ -1280,6 +1296,7 @@ public class Graph<K, VV, EV> {
 	implements MapFunction<Edge<K, EV>, Edge<K, EV>> {
 		public Edge<K, EV> output = new Edge<>();
 
+		@Override
 		public Edge<K, EV> map(Edge<K, EV> edge) {
 			output.setFields(edge.f1, edge.f0, edge.f2);
 			return output;
@@ -2084,6 +2101,7 @@ public class Graph<K, VV, EV> {
 			this.function = fun;
 		}
 
+		@Override
 		public void reduce(Iterable<Tuple3<K, Edge<K, EV>, Vertex<K, VV>>> edges, Collector<T> out) throws Exception {
 			function.iterateNeighbors(edges, out);
 		}
@@ -2104,6 +2122,7 @@ public class Graph<K, VV, EV> {
 			this.fieldPosition = position;
 		}
 
+		@Override
 		@SuppressWarnings("unchecked")
 		public void join(Edge<K, EV> edge, Vertex<K, VV> otherVertex,
 				Collector<Tuple2<K, VV>> out) {
@@ -2120,6 +2139,7 @@ public class Graph<K, VV, EV> {
 			this.fieldPosition = position;
 		}
 
+		@Override
 		@SuppressWarnings("unchecked")
 		public void join(Edge<K, EV> edge, Vertex<K, VV> otherVertex,
 						Collector<Tuple3<K, Edge<K, EV>, Vertex<K, VV>>> out) {
@@ -2132,6 +2152,7 @@ public class Graph<K, VV, EV> {
 	private static final class ProjectNeighborValue<K, VV, EV> implements FlatJoinFunction<
 		Tuple3<K, K, Edge<K, EV>>, Vertex<K, VV>, Tuple2<K, VV>> {
 
+		@Override
 		public void join(Tuple3<K, K, Edge<K, EV>> keysWithEdge, Vertex<K, VV> neighbor,
 				Collector<Tuple2<K, VV>> out) {
 
@@ -2144,6 +2165,7 @@ public class Graph<K, VV, EV> {
 	private static final class ProjectEdgeWithNeighbor<K, VV, EV> implements FlatJoinFunction<
 		Tuple3<K, K, Edge<K, EV>>, Vertex<K, VV>, Tuple3<K, Edge<K, EV>, Vertex<K, VV>>> {
 
+		@Override
 		public void join(Tuple3<K, K, Edge<K, EV>> keysWithEdge, Vertex<K, VV> neighbor,
 						Collector<Tuple3<K, Edge<K, EV>, Vertex<K, VV>>> out) {
 			out.collect(new Tuple3<>(keysWithEdge.f0, keysWithEdge.f2, neighbor));
@@ -2159,6 +2181,7 @@ public class Graph<K, VV, EV> {
 			this.function = fun;
 		}
 
+		@Override
 		public void coGroup(Iterable<Vertex<K, VV>> vertex, Iterable<Tuple2<Edge<K, EV>, Vertex<K, VV>>> neighbors,
 				Collector<T> out) throws Exception {
 			function.iterateNeighbors(vertex.iterator().next(), neighbors, out);
@@ -2179,6 +2202,7 @@ public class Graph<K, VV, EV> {
 			this.function = fun;
 		}
 
+		@Override
 		public void coGroup(Iterable<Vertex<K, VV>> vertex,
 				final Iterable<Tuple3<K, Edge<K, EV>, Vertex<K, VV>>> keysWithNeighbors,
 				Collector<T> out) throws Exception {
@@ -2205,6 +2229,7 @@ public class Graph<K, VV, EV> {
 			};
 
 			Iterable<Tuple2<Edge<K, EV>, Vertex<K, VV>>> neighborsIterable = new Iterable<Tuple2<Edge<K, EV>, Vertex<K, VV>>>() {
+				@Override
 				public Iterator<Tuple2<Edge<K, EV>, Vertex<K, VV>>> iterator() {
 					return neighborsIterator;
 				}

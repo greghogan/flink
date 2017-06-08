@@ -67,6 +67,7 @@ public class SpargelCompilerTest extends CompilerTestBase {
 		DataSet<Edge<Long, NullValue>> edges = env.fromElements(new Tuple2<>(1L, 2L))
 			.map(new MapFunction<Tuple2<Long, Long>, Edge<Long, NullValue>>() {
 
+				@Override
 				public Edge<Long, NullValue> map(Tuple2<Long, Long> edge) {
 					return new Edge<>(edge.f0, edge.f1, NullValue.getInstance());
 				}
@@ -141,6 +142,7 @@ public class SpargelCompilerTest extends CompilerTestBase {
 		DataSet<Edge<Long, NullValue>> edges = env.fromElements(new Tuple2<>(1L, 2L))
 			.map(new MapFunction<Tuple2<Long, Long>, Edge<Long, NullValue>>() {
 
+				@Override
 				public Edge<Long, NullValue> map(Tuple2<Long, Long> edge) {
 					return new Edge<>(edge.f0, edge.f1, NullValue.getInstance());
 				}

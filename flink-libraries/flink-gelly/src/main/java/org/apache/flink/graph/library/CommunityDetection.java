@@ -172,6 +172,7 @@ public class CommunityDetection<K> implements GraphAlgorithm<K, Long, Double, Gr
 	private static final class AddScoreToVertexValuesMapper<K> implements MapFunction<
 		Vertex<K, Long>, Vertex<K, Tuple2<Long, Double>>> {
 
+		@Override
 		public Vertex<K, Tuple2<Long, Double>> map(Vertex<K, Long> vertex) {
 			return new Vertex<>(vertex.getId(), new Tuple2<>(vertex.getValue(), 1.0));
 		}

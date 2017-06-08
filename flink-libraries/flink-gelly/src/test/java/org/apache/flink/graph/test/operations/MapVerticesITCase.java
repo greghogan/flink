@@ -160,6 +160,7 @@ public class MapVerticesITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class AddOneMapper implements MapFunction<Vertex<Long, Long>, Long> {
+		@Override
 		public Long map(Vertex<Long, Long> value) throws Exception {
 			return value.getValue() + 1;
 		}
@@ -167,6 +168,7 @@ public class MapVerticesITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class ToStringMapper implements MapFunction<Vertex<Long, Long>, String> {
+		@Override
 		public String map(Vertex<Long, Long> vertex) throws Exception {
 			String stringValue;
 			if (vertex.getValue() == 1) {
@@ -188,6 +190,7 @@ public class MapVerticesITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class ToTuple1Mapper implements MapFunction<Vertex<Long, Long>, Tuple1<Long>> {
+		@Override
 		public Tuple1<Long> map(Vertex<Long, Long> vertex) throws Exception {
 			Tuple1<Long> tupleValue = new Tuple1<>();
 			tupleValue.setFields(vertex.getValue());
@@ -197,6 +200,7 @@ public class MapVerticesITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class ToCustomTypeMapper implements MapFunction<Vertex<Long, Long>, DummyCustomType> {
+		@Override
 		public DummyCustomType map(Vertex<Long, Long> vertex) throws Exception {
 			DummyCustomType dummyValue = new DummyCustomType();
 			dummyValue.setIntField(vertex.getValue().intValue());
@@ -208,6 +212,7 @@ public class MapVerticesITCase extends MultipleProgramsTestBase {
 	private static final class ToCustomParametrizedTypeMapper implements MapFunction<Vertex<Long, Long>,
 		DummyCustomParameterizedType<Double>> {
 
+		@Override
 		public DummyCustomParameterizedType<Double> map(Vertex<Long, Long> vertex) throws Exception {
 			DummyCustomParameterizedType<Double> dummyValue = new DummyCustomParameterizedType<>();
 			dummyValue.setIntField(vertex.getValue().intValue());

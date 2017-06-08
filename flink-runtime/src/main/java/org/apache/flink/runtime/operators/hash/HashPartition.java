@@ -467,6 +467,7 @@ public class HashPartition<BT, PT> extends AbstractPagedInputView implements See
 	//                   Methods to provide input view abstraction for reading probe records
 	// --------------------------------------------------------------------------------------------------
 	
+	@Override
 	public void setReadPosition(long pointer) {
 		final int bufferNum = (int) (pointer >>> this.segmentSizeBits);
 		final int offset = (int) (pointer & (this.memorySegmentSize - 1));
@@ -599,6 +600,7 @@ public class HashPartition<BT, PT> extends AbstractPagedInputView implements See
 		}
 		
 		
+		@Override
 		public final BT next(BT reuse) throws IOException {
 			final int pos = getCurrentPositionInSegment();
 			final int buffer = HashPartition.this.currentBufferNum;
@@ -614,6 +616,7 @@ public class HashPartition<BT, PT> extends AbstractPagedInputView implements See
 			}
 		}
 
+		@Override
 		public final BT next() throws IOException {
 			final int pos = getCurrentPositionInSegment();
 			final int buffer = HashPartition.this.currentBufferNum;

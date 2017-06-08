@@ -86,6 +86,7 @@ class AkkaKvStateLocationLookupService implements KvStateLocationLookupService, 
 		this.retryStrategyFactory = Preconditions.checkNotNull(retryStrategyFactory, "Retry strategy factory");
 	}
 
+	@Override
 	public void start() {
 		try {
 			leaderRetrievalService.start(this);
@@ -95,6 +96,7 @@ class AkkaKvStateLocationLookupService implements KvStateLocationLookupService, 
 		}
 	}
 
+	@Override
 	public void shutDown() {
 		try {
 			leaderRetrievalService.stop();

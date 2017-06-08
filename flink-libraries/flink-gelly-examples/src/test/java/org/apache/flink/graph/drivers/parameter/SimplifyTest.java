@@ -33,6 +33,7 @@ extends ParameterTestBase {
 
 	private Simplify parameter;
 
+	@Override
 	@Before
 	public void setup() {
 		super.setup();

@@ -215,6 +215,7 @@ public class WorksetIterationsJavaApiCompilerTest extends CompilerTestBase {
 				.where(1, 2)
 				.equalTo(1, 2)
 				.with(new JoinFunction<Tuple3<Long,Long,Long>, Tuple3<Long, Long, Long>, Tuple3<Long,Long,Long>>() {
+					@Override
 					public Tuple3<Long, Long, Long> join(Tuple3<Long, Long, Long> first, Tuple3<Long, Long, Long> second) {
 						return first;
 					}
@@ -225,6 +226,7 @@ public class WorksetIterationsJavaApiCompilerTest extends CompilerTestBase {
 				.where(1, 0)
 				.equalTo(0, 2)
 				.with(new JoinFunction<Tuple3<Long, Long, Long>, Tuple3<Long, Long, Long>, Tuple3<Long, Long, Long>>() {
+					@Override
 					public Tuple3<Long, Long, Long> join(Tuple3<Long, Long, Long> first, Tuple3<Long, Long, Long> second) {
 						return second;
 					}
@@ -264,6 +266,7 @@ public class WorksetIterationsJavaApiCompilerTest extends CompilerTestBase {
 			.where(1, 2)
 			.equalTo(1, 2)
 			.with(new RichJoinFunction<Tuple3<Long,Long,Long>, Tuple3<Long, Long, Long>, Tuple3<Long,Long,Long>>() {
+				@Override
 				public Tuple3<Long, Long, Long> join(Tuple3<Long, Long, Long> first, Tuple3<Long, Long, Long> second) {
 					return first;
 				}
@@ -274,6 +277,7 @@ public class WorksetIterationsJavaApiCompilerTest extends CompilerTestBase {
 			.where(1, 0)
 			.equalTo(1, 2)
 			.with(new RichJoinFunction<Tuple3<Long, Long, Long>, Tuple3<Long, Long, Long>, Tuple3<Long, Long, Long>>() {
+				@Override
 				public Tuple3<Long, Long, Long> join(Tuple3<Long, Long, Long> first, Tuple3<Long, Long, Long> second) {
 					return second;
 				}
@@ -283,6 +287,7 @@ public class WorksetIterationsJavaApiCompilerTest extends CompilerTestBase {
 			
 		DataSet<Tuple3<Long, Long, Long>> nextWorkset = joinedWithSolutionSet.groupBy(1, 2)
 			.reduceGroup(new RichGroupReduceFunction<Tuple3<Long,Long,Long>, Tuple3<Long,Long,Long>>() {
+				@Override
 				public void reduce(Iterable<Tuple3<Long, Long, Long>> values, Collector<Tuple3<Long, Long, Long>> out) {}
 			})
 			.name(NEXT_WORKSET_REDUCER_NAME)
@@ -290,7 +295,9 @@ public class WorksetIterationsJavaApiCompilerTest extends CompilerTestBase {
 		
 		
 		DataSet<Tuple3<Long, Long, Long>> nextSolutionSet = mapBeforeSolutionDelta ?
-				joinedWithSolutionSet.map(new RichMapFunction<Tuple3<Long, Long, Long>,Tuple3<Long, Long, Long>>() { public Tuple3<Long, Long, Long> map(Tuple3<Long, Long, Long> value) { return value; } })
+				joinedWithSolutionSet.map(new RichMapFunction<Tuple3<Long, Long, Long>,Tuple3<Long, Long, Long>>() {
+					@Override
+					public Tuple3<Long, Long, Long> map(Tuple3<Long, Long, Long> value) { return value; } })
 					.name(SOLUTION_DELTA_MAPPER_NAME).withForwardedFields("0->0","1->1","2->2") :
 				joinedWithSolutionSet;
 		

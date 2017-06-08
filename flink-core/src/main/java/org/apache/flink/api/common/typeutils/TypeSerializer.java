@@ -58,6 +58,7 @@ public abstract class TypeSerializer<T> implements TypeDeserializer<T>, Serializ
 	 * We need this because Serializers might be used in several threads. Stateless serializers
 	 * are inherently thread-safe while stateful serializers might not be thread-safe.
 	 */
+	@Override
 	public abstract TypeSerializer<T> duplicate();
 
 	// --------------------------------------------------------------------------------------------
@@ -97,6 +98,7 @@ public abstract class TypeSerializer<T> implements TypeDeserializer<T>, Serializ
 	 * 
 	 * @return The length of the data type, or <code>-1</code> for variable length data types.
 	 */
+	@Override
 	public abstract int getLength();
 	
 	// --------------------------------------------------------------------------------------------
@@ -121,6 +123,7 @@ public abstract class TypeSerializer<T> implements TypeDeserializer<T>, Serializ
 	 * @throws IOException Thrown, if the de-serialization encountered an I/O related error. Typically raised by the
 	 *                     input view, which may have an underlying I/O channel from which it reads.
 	 */
+	@Override
 	public abstract T deserialize(DataInputView source) throws IOException;
 	
 	/**
@@ -133,6 +136,7 @@ public abstract class TypeSerializer<T> implements TypeDeserializer<T>, Serializ
 	 * @throws IOException Thrown, if the de-serialization encountered an I/O related error. Typically raised by the
 	 *                     input view, which may have an underlying I/O channel from which it reads.
 	 */
+	@Override
 	public abstract T deserialize(T reuse, DataInputView source) throws IOException;
 	
 	/**
@@ -157,6 +161,7 @@ public abstract class TypeSerializer<T> implements TypeDeserializer<T>, Serializ
 	 * @param obj Object which wants to take part in the equality relation
 	 * @return true if obj can be equaled with this, otherwise false
 	 */
+	@Override
 	public abstract boolean canEqual(Object obj);
 
 	public abstract int hashCode();

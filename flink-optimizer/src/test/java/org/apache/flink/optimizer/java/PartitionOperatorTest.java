@@ -55,6 +55,7 @@ public class PartitionOperatorTest extends CompilerTestBase {
 			DataSet<Tuple2<Long, Long>> data = env.fromCollection(Collections.singleton(new Tuple2<>(0L, 0L)));
 			
 			data.partitionCustom(new Partitioner<Long>() {
+					@Override
 					public int partition(Long key, int numPartitions) { return key.intValue(); }
 				}, 1)
 				.groupBy(1)

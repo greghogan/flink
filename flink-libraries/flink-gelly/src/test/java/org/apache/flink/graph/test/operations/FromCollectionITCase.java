@@ -114,6 +114,7 @@ public class FromCollectionITCase extends MultipleProgramsTestBase {
 
 	@SuppressWarnings("serial")
 	private static final class InitVerticesMapper implements MapFunction<Long, Long> {
+		@Override
 		public Long map(Long vertexId) {
 			return vertexId * 2;
 		}

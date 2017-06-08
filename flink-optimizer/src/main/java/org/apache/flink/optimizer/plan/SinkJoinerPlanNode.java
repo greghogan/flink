@@ -37,6 +37,7 @@ public class SinkJoinerPlanNode extends DualInputPlanNode {
 	
 	// --------------------------------------------------------------------------------------------
 	
+	@Override
 	public void setCosts(Costs nodeCosts) {
 		// the plan enumeration logic works as for regular two-input-operators, which is important
 		// because of the branch handling logic. it does pick redistributing network channels

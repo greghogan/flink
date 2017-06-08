@@ -30,6 +30,7 @@ public class BooleanValueSummaryAggregatorTest extends BooleanSummaryAggregatorT
 	 * This method breaks the rule of "testing only one thing" by aggregating and combining
 	 * a bunch of different ways.
 	 */
+	@Override
 	protected BooleanColumnSummary summarize(Boolean... values) {
 
 		BooleanValue[] booleanValues = new BooleanValue[values.length];

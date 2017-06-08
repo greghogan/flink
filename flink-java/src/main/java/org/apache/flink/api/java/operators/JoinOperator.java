@@ -541,6 +541,7 @@ public abstract class JoinOperator<I1, I2, OUT> extends TwoInputUdfOperator<I1, 
 		 * @see org.apache.flink.api.java.operators.JoinOperator.EquiJoin
 		 * @see DataSet
 		 */
+		@Override
 		public <R> EquiJoin<I1, I2, R> with(FlatJoinFunction<I1, I2, R> function) {
 			if (function == null) {
 				throw new NullPointerException("Join function must not be null.");
@@ -549,6 +550,7 @@ public abstract class JoinOperator<I1, I2, OUT> extends TwoInputUdfOperator<I1, 
 			return new EquiJoin<>(getInput1(), getInput2(), getKeys1(), getKeys2(), clean(function), returnType, getJoinHint(), Utils.getCallLocationName(), joinType);
 		}
 
+		@Override
 		public <R> EquiJoin<I1, I2, R> with(JoinFunction<I1, I2, R> function) {
 			if (function == null) {
 				throw new NullPointerException("Join function must not be null.");
@@ -1018,6 +1020,7 @@ public abstract class JoinOperator<I1, I2, OUT> extends TwoInputUdfOperator<I1, 
 			return isFromFirst;
 		}
 
+		@Override
 		public void join(T1 in1, T2 in2, Collector<R> out) {
 			for (int i = 0; i < fields.length; i++) {
 				if (isFromFirst[i]) {

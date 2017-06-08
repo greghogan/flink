@@ -65,6 +65,7 @@ public class CassandraCommitter extends CheckpointCommitter {
 	/**
 	 * Internally used to set the job ID after instantiation.
 	 */
+	@Override
 	public void setJobId(String id) throws Exception {
 		super.setJobId(id);
 		table += id;

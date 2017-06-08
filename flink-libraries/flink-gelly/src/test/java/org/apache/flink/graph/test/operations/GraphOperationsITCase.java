@@ -111,11 +111,13 @@ public class GraphOperationsITCase extends MultipleProgramsTestBase {
 
 		DataSet<Edge<Long, Long>> data = graph.subgraph(
 			new FilterFunction<Vertex<Long, Long>>() {
+				@Override
 				public boolean filter(Vertex<Long, Long> vertex) throws Exception {
 					return (vertex.getValue() > 2);
 				}
 			},
 			new FilterFunction<Edge<Long, Long>>() {
+				@Override
 				public boolean filter(Edge<Long, Long> edge) throws Exception {
 					return (edge.getValue() > 34);
 				}
@@ -141,6 +143,7 @@ public class GraphOperationsITCase extends MultipleProgramsTestBase {
 			TestGraphUtils.getLongLongEdgeData(env), env);
 
 		DataSet<Edge<Long, Long>> data = graph.filterOnVertices(new FilterFunction<Vertex<Long, Long>>() {
+			@Override
 			public boolean filter(Vertex<Long, Long> vertex) throws Exception {
 				return (vertex.getValue() > 2);
 			}
@@ -167,6 +170,7 @@ public class GraphOperationsITCase extends MultipleProgramsTestBase {
 			TestGraphUtils.getLongLongEdgeData(env), env);
 
 		DataSet<Edge<Long, Long>> data = graph.filterOnEdges(new FilterFunction<Edge<Long, Long>>() {
+			@Override
 			public boolean filter(Edge<Long, Long> edge) throws Exception {
 				return (edge.getValue() > 34);
 			}

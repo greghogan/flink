@@ -213,6 +213,7 @@ public class FileStateBackendTest extends StateBackendTestBase<FsStateBackend> {
 		}
 	}
 
+	@Override
 	@Ignore
 	@Test
 	public void testConcurrentMapIfQueryable() throws Exception {

@@ -638,6 +638,7 @@ public class IterateITCase extends StreamingMultipleProgramsTestBase {
 	}
 
 	public static final class IterationHead extends RichFlatMapFunction<Boolean, Boolean> {
+		@Override
 		public void flatMap(Boolean value, Collector<Boolean> out) throws Exception {
 			int indx = getRuntimeContext().getIndexOfThisSubtask();
 			if (value) {
@@ -650,10 +651,12 @@ public class IterateITCase extends StreamingMultipleProgramsTestBase {
 
 	public static CoMapFunction<Integer, String, String> NoOpCoMap = new CoMapFunction<Integer, String, String>() {
 
+		@Override
 		public String map1(Integer value) throws Exception {
 			return value.toString();
 		}
 
+		@Override
 		public String map2(String value) throws Exception {
 			return value;
 		}
@@ -663,6 +666,7 @@ public class IterateITCase extends StreamingMultipleProgramsTestBase {
 
 	public static MapFunction<String, String> NoOpStrMap = new MapFunction<String, String>() {
 
+		@Override
 		public String map(String value) throws Exception {
 			return value;
 		}
@@ -671,10 +675,12 @@ public class IterateITCase extends StreamingMultipleProgramsTestBase {
 
 	public static CoMapFunction<Integer, Integer, Integer> NoOpIntCoMap = new CoMapFunction<Integer, Integer, Integer>() {
 
+		@Override
 		public Integer map1(Integer value) throws Exception {
 			return value;
 		}
 
+		@Override
 		public Integer map2(Integer value) throws Exception {
 			return value;
 		}
@@ -683,6 +689,7 @@ public class IterateITCase extends StreamingMultipleProgramsTestBase {
 
 	public static MapFunction<Boolean, Boolean> NoOpBoolMap = new MapFunction<Boolean, Boolean>() {
 
+		@Override
 		public Boolean map(Boolean value) throws Exception {
 			return value;
 		}

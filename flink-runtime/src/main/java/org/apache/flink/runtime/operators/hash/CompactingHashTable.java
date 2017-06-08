@@ -346,6 +346,7 @@ public class CompactingHashTable<T> extends AbstractMutableHashTable<T> {
 	 * @param record record to insert or replace
 	 * @throws IOException
 	 */
+	@Override
 	public void insertOrReplaceRecord(T record) throws IOException {
 		if (this.closed) {
 			return;
@@ -665,6 +666,7 @@ public class CompactingHashTable<T> extends AbstractMutableHashTable<T> {
 	 * @return Iterator over hash table
 	 * @see EntryIterator
 	 */
+	@Override
 	public MutableObjectIterator<T> getEntryIterator() {
 		return new EntryIterator(this);
 	}
@@ -1250,6 +1252,7 @@ public class CompactingHashTable<T> extends AbstractMutableHashTable<T> {
 			super(probeTypeComparator, pairComparator);
 		}
 		
+		@Override
 		public T getMatchFor(PT probeSideRecord, T reuse) {
 			if (closed) {
 				return null;
@@ -1323,6 +1326,7 @@ public class CompactingHashTable<T> extends AbstractMutableHashTable<T> {
 			}
 		}
 
+		@Override
 		public T getMatchFor(PT probeSideRecord) {
 			if (closed) {
 				return null;
@@ -1396,6 +1400,7 @@ public class CompactingHashTable<T> extends AbstractMutableHashTable<T> {
 			}
 		}
 
+		@Override
 		public void updateMatch(T record) throws IOException {
 			if (closed) {
 				return;

@@ -563,6 +563,7 @@ public class ExecutionJobVertex implements AccessExecutionJobVertex, Archiveable
 	//  Accumulators / Metrics
 	// --------------------------------------------------------------------------------------------
 
+	@Override
 	public StringifiedAccumulatorResult[] getAggregatedUserAccumulatorsStringified() {
 		Map<String, Accumulator<?, ?>> userAccumulators = new HashMap<String, Accumulator<?, ?>>();
 

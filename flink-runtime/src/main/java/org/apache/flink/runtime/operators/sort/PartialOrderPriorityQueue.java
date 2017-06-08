@@ -107,6 +107,7 @@ public class PartialOrderPriorityQueue<T> extends AbstractQueue<T> implements Qu
 	 *        The element to insert,
 	 * @return True, if element is added, false otherwise.
 	 */
+	@Override
 	public boolean offer(T element) {
 		if (size < capacity) {
 			put(element);
@@ -126,6 +127,7 @@ public class PartialOrderPriorityQueue<T> extends AbstractQueue<T> implements Qu
 	 * 
 	 * @return The least element.
 	 */
+	@Override
 	public final T peek() {
 		if (size > 0) {
 			return heap[1];
@@ -140,6 +142,7 @@ public class PartialOrderPriorityQueue<T> extends AbstractQueue<T> implements Qu
 	 * 
 	 * @return The least element.
 	 */
+	@Override
 	public final T poll() {
 		if (size > 0) {
 			T result = heap[1]; // save first value
@@ -183,6 +186,7 @@ public class PartialOrderPriorityQueue<T> extends AbstractQueue<T> implements Qu
 	 * 
 	 * @return The number of elements in the queue.
 	 */
+	@Override
 	public final int size() {
 		return size;
 	}
@@ -190,6 +194,7 @@ public class PartialOrderPriorityQueue<T> extends AbstractQueue<T> implements Qu
 	/**
 	 * Removes all entries from the PriorityQueue.
 	 */
+	@Override
 	public final void clear() {
 		for (int i = 0; i <= size; i++) {
 			heap[i] = null;

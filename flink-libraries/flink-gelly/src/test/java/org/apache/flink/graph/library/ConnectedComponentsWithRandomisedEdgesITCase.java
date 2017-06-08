@@ -87,6 +87,7 @@ public class ConnectedComponentsWithRandomisedEdgesITCase extends JavaProgramTes
 	}
 
 	private static final class EdgeParser extends RichMapFunction<String, Edge<Long, NullValue>> {
+		@Override
 		public Edge<Long, NullValue> map(String value) {
 			String[] nums = value.split(" ");
 			return new Edge<>(Long.parseLong(nums[0]), Long.parseLong(nums[1]),

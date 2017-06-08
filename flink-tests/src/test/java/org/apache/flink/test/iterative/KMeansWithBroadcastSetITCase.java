@@ -46,6 +46,7 @@ public class KMeansWithBroadcastSetITCase extends JavaProgramTestBase {
 		// get input data
 		DataSet<Point> pointsSet = env.fromElements(points)
 				.map(new MapFunction<String, Point>() {
+					@Override
 					public Point map(String p) {
 						String[] fields = p.split("\\|");
 						return new Point(
@@ -56,6 +57,7 @@ public class KMeansWithBroadcastSetITCase extends JavaProgramTestBase {
 
 		DataSet <Centroid> centroidsSet = env.fromElements(centers)
 				.map(new MapFunction<String, Centroid>() {
+					@Override
 					public Centroid map(String c) {
 						String[] fields = c.split("\\|");
 						return new Centroid(
