@@ -73,10 +73,6 @@ flink-queryable-state/flink-queryable-state-client-java"
 
 MODULES_CONNECTORS="\
 flink-contrib/flink-connector-wikiedits,\
-flink-filesystems/flink-hadoop-fs,\
-flink-filesystems/flink-mapr-fs,\
-flink-filesystems/flink-s3-fs-hadoop,\
-flink-filesystems/flink-s3-fs-presto,\
 flink-formats/flink-avro,\
 flink-connectors/flink-hbase,\
 flink-connectors/flink-hcatalog,\
@@ -96,6 +92,14 @@ flink-connectors/flink-connector-kafka-base,\
 flink-connectors/flink-connector-nifi,\
 flink-connectors/flink-connector-rabbitmq,\
 flink-connectors/flink-connector-twitter"
+
+MODULES_HADOOP="\
+flink-filesystems/flink-hadoop-fs,\
+flink-filesystems/flink-mapr-fs,\
+flink-filesystems/flink-s3-fs-hadoop,\
+flink-filesystems/flink-s3-fs-presto,\
+flink-yarn,\
+flink-yarn-tests"
 
 MODULES_TESTS="\
 flink-tests"
@@ -131,6 +135,12 @@ case $TEST in
 		MVN_COMPILE_OPTIONS="-Dcheckstyle.skip=true -Djapicmp.skip=true -Drat.skip=true"
 		MVN_TEST_OPTIONS="-Dcheckstyle.skip=true"
 	;;
+	(hadoop)
+		MVN_COMPILE_MODULES=""
+		MVN_TEST_MODULES="-pl $MODULES_HADOOP"
+		MVN_COMPILE_OPTIONS="-Dcheckstyle.skip=true -Djapicmp.skip=true -Drat.skip=true"
+		MVN_TEST_OPTIONS="-Dcheckstyle.skip=true"
+	;;
 	(tests)
 		MVN_COMPILE_MODULES="-pl $MODULES_TESTS -am"
 		MVN_TEST_MODULES="-pl $MODULES_TESTS"
@@ -141,10 +151,11 @@ case $TEST in
 		NEGATED_CORE=\!${MODULES_CORE//,/,\!}
 		NEGATED_LIBRARIES=\!${MODULES_LIBRARIES//,/,\!}
 		NEGATED_CONNECTORS=\!${MODULES_CONNECTORS//,/,\!}
+		NEGATED_HADOOP=\!${MODULES_HADOOP//,/,\!}
 		NEGATED_TESTS=\!${MODULES_TESTS//,/,\!}
 		# compile everything since dist needs it anyway
 		MVN_COMPILE_MODULES=""
-		MVN_TEST_MODULES="-pl $NEGATED_CORE,$NEGATED_LIBRARIES,$NEGATED_CONNECTORS,$NEGATED_TESTS"
+		MVN_TEST_MODULES="-pl $NEGATED_CORE,$NEGATED_LIBRARIES,$NEGATED_CONNECTORS,$NEGATED_HADOOP,$NEGATED_TESTS"
 		MVN_COMPILE_OPTIONS="-Dspotbugs"
 		MVN_TEST_OPTIONS="-Dcheckstyle.skip=true"
 	;;
@@ -502,8 +513,6 @@ echo "Trying to KILL watchdog (${WD_PID})."
 # only misc builds flink-dist and flink-yarn-tests
 case $TEST in
 	(misc)
-		put_yarn_logs_to_artifacts
-
 		if [ $EXIT_CODE == 0 ]; then
 			check_shaded_artifacts
 			EXIT_CODE=$?
@@ -513,7 +522,9 @@ case $TEST in
 			echo "=============================================================================="
 		fi
 	;;
-	(connectors)
+	(hadoop)
+		put_yarn_logs_to_artifacts
+
 		if [ $EXIT_CODE == 0 ]; then
 			check_shaded_artifacts_s3_fs hadoop
 			check_shaded_artifacts_s3_fs presto
@@ -532,14 +543,14 @@ upload_artifacts_s3
 # we are going back to
 cd ../../
 
-# only run end-to-end tests in misc because we only have flink-dist here
-case $TEST in
-	(misc)
-		if [ $EXIT_CODE == 0 ]; then
-			printf "\n\n==============================================================================\n"
-			printf "Running end-to-end tests\n"
-			printf "==============================================================================\n"
+# only run end-to-end tests in misc or hadoop-* because we only have flink-dist here
+if [ $EXIT_CODE == 0 ]; then
+	printf "\n\n==============================================================================\n"
+	printf "Running end-to-end tests\n"
+	printf "==============================================================================\n"
 
+    case $TEST in
+	    (misc)
 			printf "\n==============================================================================\n"
 			printf "Running Wordcount end-to-end test\n"
 			printf "==============================================================================\n"
@@ -557,7 +568,8 @@ case $TEST in
 			printf "==============================================================================\n"
 			FLINK_DIR=build-target CLUSTER_MODE=cluster test-infra/end-to-end-test/test_streaming_classloader.sh
 			EXIT_CODE=$(($EXIT_CODE+$?))
-
+		;;
+	    (hadoop)
 			printf "\n==============================================================================\n"
 			printf "Running Shaded Hadoop S3A end-to-end test\n"
 			printf "==============================================================================\n"
@@ -569,13 +581,13 @@ case $TEST in
 			printf "==============================================================================\n"
 			FLINK_DIR=build-target CLUSTER_MODE=cluster test-infra/end-to-end-test/test_shaded_presto_s3.sh
 			EXIT_CODE=$(($EXIT_CODE+$?))
-		else
-			printf "\n==============================================================================\n"
-			printf "Previous build failure detected, skipping end-to-end tests.\n"
-			printf "==============================================================================\n"
-		fi
-	;;
-esac
+		;;
+	esac
+else
+	printf "\n==============================================================================\n"
+	printf "Previous build failure detected, skipping end-to-end tests.\n"
+	printf "==============================================================================\n"
+fi
 
 # Exit code for Travis build success/failure
 exit $EXIT_CODE
