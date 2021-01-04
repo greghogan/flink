@@ -24,7 +24,7 @@ import org.apache.flink.api.java.utils.ParameterTool;
  * A {@link Parameter} storing a {@link Double}.
  */
 public class DoubleParameter
-extends SimpleParameter<Double> {
+extends SimpleParameter<Double, DoubleParameter> {
 
 	private boolean hasMinimumValue = false;
 	private boolean minimumValueInclusive;
@@ -173,5 +173,10 @@ extends SimpleParameter<Double> {
 	@Override
 	public String toString() {
 		return Double.toString(value);
+	}
+
+	@Override
+	protected DoubleParameter getThis() {
+		return this;
 	}
 }

@@ -19,7 +19,7 @@
 package org.apache.flink.graph.drivers;
 
 import org.apache.flink.client.program.ProgramParametrizationException;
-import org.apache.flink.graph.asm.dataset.ChecksumHashCode.Checksum;
+import org.apache.flink.graph.asm.dataset.ChecksumHashCode;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Assume;
@@ -28,19 +28,20 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 /**
- * Tests for {@link JaccardIndex}.
+ *
  */
 @RunWith(Parameterized.class)
-public class JaccardIndexITCase extends CopyableValueDriverBaseITCase {
+public class AllPairsDistanceITCase
+extends CopyableValueDriverBaseITCase {
 
-	public JaccardIndexITCase(String idType, TestExecutionMode mode) {
+	public AllPairsDistanceITCase(String idType, TestExecutionMode mode) {
 		super(idType, mode);
 	}
 
 	private String[] parameters(int scale, String output, String... additionalParameters) {
 		String[] parameters = new String[] {
-			"--algorithm", "JaccardIndex", "--mirror_results",
-			"--input", "RMatGraph", "--scale", Integer.toString(scale), "--type", idType, "--simplify", "undirected",
+			"--algorithm", "AllPairsDistance",
+			"--input", "RMatGraph", "--scale", Integer.toString(scale), "--type", idType, "--simplify", "directed",
 			"--output", output};
 
 		return ArrayUtils.addAll(parameters, additionalParameters);
@@ -48,40 +49,24 @@ public class JaccardIndexITCase extends CopyableValueDriverBaseITCase {
 
 	@Test
 	public void testLongDescription() throws Exception {
-		String expected = regexSubstring(new JaccardIndex().getLongDescription());
+		String expected = regexSubstring(new AllPairsDistance().getLongDescription());
 
 		expectedOutputFromException(
-			new String[]{"--algorithm", "JaccardIndex"},
+			new String[]{"--algorithm", "AllPairsDistance"},
 			expected,
 			ProgramParametrizationException.class);
 	}
 
 	@Test
-	public void testHashWithRMatGraph() throws Exception {
-		expectedChecksum(parameters(8, "hash"), 39276, 0x00004caba2e663d5L);
+	public void testHashWithSmallRMatGraph() throws Exception {
+		expectedChecksum(parameters(7, "hash"), 11779, 0x000017159c104711L);
 	}
 
 	@Test
-	public void testPrintWithRMatGraph() throws Exception {
+	public void testPrintWithSmallRMatGraph() throws Exception {
 		// skip 'char' since it is not printed as a number
 		Assume.assumeFalse(idType.equals("char") || idType.equals("nativeChar"));
 
-		expectedOutputChecksum(parameters(8, "print"), new Checksum(39276, 0x00004c5a726220c0L));
-	}
-
-	@Test
-	public void testCSVWithRMatGraph() throws Exception {
-		// skip 'char' since it is not printed as a number
-		Assume.assumeFalse(idType.equals("char") || idType.equals("nativeChar"));
-
-		expectedOutputChecksum(parameters(8, "csv"), new Checksum(39276, 0x00004c5a726220c0L));
-	}
-
-	@Test
-	public void testParallelism() throws Exception {
-		TestUtils.verifyParallelism(parameters(8, "print"),
-			"FlatMap \\(Mirror results\\)",
-			"GroupReduce \\(Compute scores\\)",
-			"GroupReduce \\(Generate group pairs\\)");
+		expectedOutputChecksum(parameters(7, "print"), new ChecksumHashCode.Checksum(11779, 0x0000170c57e0ff3eL));
 	}
 }

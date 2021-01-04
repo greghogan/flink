@@ -16,44 +16,48 @@
  * limitations under the License.
  */
 
-package org.apache.flink.graph.drivers.parameter;
+package org.apache.flink.graph.library.cores;
 
-import org.apache.flink.api.java.utils.ParameterTool;
+import org.apache.flink.api.common.aggregators.Aggregator;
+import org.apache.flink.types.IntValue;
 
 /**
- * A {@link Parameter} storing a {@link Boolean}.
+ * An {@link Aggregator} that computes the minimum of Int values.
  */
-public class BooleanParameter
-extends SimpleParameter<Boolean, BooleanParameter> {
+@SuppressWarnings("serial")
+public class IntMinAggregator implements Aggregator<IntValue> {
+
+	private int min;
+
+	private int initialValue;
+
+	public IntMinAggregator() {}
+
+	public IntMinAggregator(int initialValue) {
+		this.min = this.initialValue = initialValue;
+	}
+
+	@Override
+	public IntValue getAggregate() {
+		return new IntValue(min);
+	}
+
+	@Override
+	public void aggregate(IntValue value) {
+		min = Math.min(min, value.getValue());
+	}
 
 	/**
-	 * Set the parameter name and add this parameter to the list of parameters
-	 * stored by owner.
+	 * Adds the given value to the current aggregate.
 	 *
-	 * @param owner the {@link Parameterized} using this {@link Parameter}
-	 * @param name the parameter name
+	 * @param value The value to add to the aggregate.
 	 */
-	public BooleanParameter(ParameterizedBase owner, String name) {
-		super(owner, name);
+	public void aggregate(int value) {
+		min = Math.min(min, value);
 	}
 
 	@Override
-	public String getUsage() {
-		return "[--" + name + "]";
-	}
-
-	@Override
-	public void configure(ParameterTool parameterTool) {
-		value = parameterTool.has(name);
-	}
-
-	@Override
-	public String toString() {
-		return Boolean.toString(value);
-	}
-
-	@Override
-	protected BooleanParameter getThis() {
-		return this;
+	public void reset() {
+		min = initialValue;
 	}
 }

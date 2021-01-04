@@ -34,7 +34,7 @@ import java.util.List;
  * the user's configured selection.
  */
 public class ChoiceParameter
-extends SimpleParameter<String> {
+extends SimpleParameter<String, ChoiceParameter> {
 
 	private List<String> choices = new ArrayList<>();
 
@@ -91,7 +91,7 @@ extends SimpleParameter<String> {
 			.append(">")
 			.toString();
 
-		return hasDefaultValue ? "[" + option + "]" : option;
+		return isOptional() ? "[" + option + "]" : option;
 	}
 
 	@Override
@@ -103,11 +103,12 @@ extends SimpleParameter<String> {
 		if (selected == null) {
 			if (hasDefaultValue) {
 				value = defaultValue;
-				return;
-			} else {
+			} else if (!isOptional()) {
 				throw new ProgramParametrizationException(
 					"Must select a choice for option '" + name + "': '[" + StringUtils.join(choices, ", ") + "]'");
 			}
+
+			return;
 		}
 
 		for (String choice : choices) {
@@ -131,5 +132,10 @@ extends SimpleParameter<String> {
 	@Override
 	public String toString() {
 		return this.value;
+	}
+
+	@Override
+	protected ChoiceParameter getThis() {
+		return this;
 	}
 }

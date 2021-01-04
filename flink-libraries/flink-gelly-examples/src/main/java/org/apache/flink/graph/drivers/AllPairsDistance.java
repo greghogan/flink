@@ -16,37 +16,31 @@
  * limitations under the License.
  */
 
-package org.apache.flink.graph.drivers.output;
+package org.apache.flink.graph.drivers;
 
 import org.apache.flink.api.java.DataSet;
-import org.apache.flink.graph.asm.dataset.ChecksumHashCode;
-import org.apache.flink.graph.drivers.parameter.BooleanParameter;
-
-import java.io.PrintStream;
+import org.apache.flink.graph.Graph;
+import org.apache.flink.types.Value;
 
 /**
- * Print hash of algorithm output.
- *
- * @param <T> result Type
+ * Driver for {@link org.apache.flink.graph.library.paths.unweighted.AllPairsDistance}.
  */
-public class Hash<T>
-extends Output<T> {
-
-	private BooleanParameter printExecutionPlan = new BooleanParameter(this, "__print_execution_plan");
+public class AllPairsDistance<K extends Value & Comparable<K>, VV, EV>
+extends DriverBase<K, VV, EV> {
 
 	@Override
-	public void write(String executionName, PrintStream out, DataSet<T> data) throws Exception {
-		ChecksumHashCode<T> checksumHashCode = new ChecksumHashCode<T>().run(data);
+	public String getShortDescription() {
+		return "all pairs Distance";
+	}
 
-		if (printExecutionPlan.getValue()) {
-			out.println();
-			out.println(data.getExecutionEnvironment().getExecutionPlan());
-		}
+	@Override
+	public String getLongDescription() {
+		return "All Pairs Distance";
+	}
 
-		ChecksumHashCode.Checksum checksum = checksumHashCode
-			.execute(executionName);
-
-		out.println();
-		out.println(checksum);
+	@Override
+	public DataSet plan(Graph<K, VV, EV> graph) throws Exception {
+		return graph
+			.run(new org.apache.flink.graph.library.paths.unweighted.AllPairsDistance<K, VV, EV>());
 	}
 }

@@ -23,7 +23,11 @@ import org.apache.flink.graph.Graph;
 import org.apache.flink.graph.drivers.parameter.BooleanParameter;
 import org.apache.flink.graph.drivers.parameter.LongParameter;
 import org.apache.flink.types.CopyableValue;
+import org.apache.flink.types.IntValue;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.apache.commons.lang3.text.StrBuilder;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -77,5 +81,34 @@ extends DriverBase<K, VV, EV> {
 				.setMaximumScore(maxNumerator.getValue().intValue(), maxDenominator.getValue().intValue())
 				.setMirrorResults(mirrorResults.getValue())
 				.setParallelism(parallelism.getValue().intValue()));
+	}
+
+	/**
+	 *
+	 * @param <K>
+	 */
+	public interface JaccardIndexResultMixinBase<K> {
+		@JsonProperty public K getVertexId0();
+		@JsonProperty public K getVertexId1();
+		@JsonProperty public IntValue getSharedNeighborCount();
+		@JsonProperty public IntValue getDistinctNeighborCount();
+	}
+
+	/**
+	 *
+	 * @param <K>
+	 */
+	@JsonPropertyOrder({"vertexId0", "vertexId1", "sharedNeighborCount", "distinctNeighborCount"})
+	public interface JaccardIndexResultMixinConcise<K> extends JaccardIndexResultMixinBase<K> {
+		@JsonIgnore public double getJaccardIndexScore();
+	}
+
+	/**
+	 *
+	 * @param <K>
+	 */
+	@JsonPropertyOrder({"vertexId0", "vertexId1", "sharedNeighborCount", "distinctNeighborCount", "jaccardIndexScore"})
+	public interface JaccardIndexResultMixinVerbose<K> extends JaccardIndexResultMixinBase<K> {
+		@JsonProperty public double getJaccardIndexScore();
 	}
 }

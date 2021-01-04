@@ -31,7 +31,7 @@ import java.io.PrintStream;
  * @param <T> result Type
  */
 public class CSV<T>
-extends OutputBase<T> {
+extends Output<T> {
 
 	private StringParameter filename = new StringParameter(this, "output_filename");
 

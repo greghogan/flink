@@ -537,8 +537,8 @@ extends GraphAlgorithmWrappingDataSet<K, VV, EV, Result<K>> {
 			// exact comparison of a/b with x/y using only integer math:
 			// a/b <?> x/y == a*y <?> b*x
 
-			long ay = sharedNeighborCount.getValue() * (long) o.distinctNeighborCount.getValue();
-			long bx = distinctNeighborCount.getValue() * (long) o.sharedNeighborCount.getValue();
+			long ay = Math.multiplyExact(sharedNeighborCount.getValue(), (long) o.distinctNeighborCount.getValue());
+			long bx = Math.multiplyExact(distinctNeighborCount.getValue(), (long) o.sharedNeighborCount.getValue());
 
 			return Long.compare(ay, bx);
 		}

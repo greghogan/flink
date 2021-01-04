@@ -16,37 +16,36 @@
  * limitations under the License.
  */
 
-package org.apache.flink.graph.drivers.output;
+package org.apache.flink.graph.drivers;
 
 import org.apache.flink.api.java.DataSet;
-import org.apache.flink.graph.asm.dataset.ChecksumHashCode;
-import org.apache.flink.graph.drivers.parameter.BooleanParameter;
-
-import java.io.PrintStream;
+import org.apache.flink.graph.Graph;
+import org.apache.flink.types.Value;
 
 /**
- * Print hash of algorithm output.
- *
- * @param <T> result Type
+ * Driver for {@link org.apache.flink.graph.library.centrality.BetweennessCentrality}.
  */
-public class Hash<T>
-extends Output<T> {
-
-	private BooleanParameter printExecutionPlan = new BooleanParameter(this, "__print_execution_plan");
+public class BetweennessCentrality<K extends Value & Comparable<K>, VV, EV>
+	extends DriverBase<K, VV, EV> {
 
 	@Override
-	public void write(String executionName, PrintStream out, DataSet<T> data) throws Exception {
-		ChecksumHashCode<T> checksumHashCode = new ChecksumHashCode<T>().run(data);
+	public String getName() {
+		return this.getClass().getSimpleName();
+	}
 
-		if (printExecutionPlan.getValue()) {
-			out.println();
-			out.println(data.getExecutionEnvironment().getExecutionPlan());
-		}
+	@Override
+	public String getShortDescription() {
+		return "BetweennessCentrality";
+	}
 
-		ChecksumHashCode.Checksum checksum = checksumHashCode
-			.execute(executionName);
+	@Override
+	public String getLongDescription() {
+		return "BetweennessCentrality";
+	}
 
-		out.println();
-		out.println(checksum);
+	@Override
+	public DataSet plan(Graph<K, VV, EV> graph) throws Exception {
+		return graph
+			.run(new org.apache.flink.graph.library.centrality.BetweennessCentrality<K, VV, EV>());
 	}
 }

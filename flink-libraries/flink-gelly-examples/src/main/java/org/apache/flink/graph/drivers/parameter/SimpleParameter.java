@@ -21,13 +21,19 @@ package org.apache.flink.graph.drivers.parameter;
 /**
  * A {@link Parameter} with a default value.
  */
-public abstract class SimpleParameter<T>
+public abstract class SimpleParameter<T, E extends SimpleParameter<T, E>>
 implements Parameter<T> {
 
 	protected final String name;
 
+	private boolean isHidden = false;
+
+	private boolean isOptional = false;
+
+	// should be private
 	protected boolean hasDefaultValue = false;
 
+	// should be private
 	protected T defaultValue;
 
 	protected T value;
@@ -44,6 +50,27 @@ implements Parameter<T> {
 		owner.addParameter(this);
 	}
 
+	@Override
+	public boolean isHidden() {
+		return isHidden;
+	}
+
+	public E setHidden(boolean isHidden) {
+		this.isHidden = isHidden;
+
+		return getThis();
+	}
+
+	public boolean isOptional() {
+		return isOptional;
+	}
+
+	public E setOptional(boolean isOptional) {
+		this.isOptional = isOptional;
+
+		return getThis();
+	}
+
 	/**
 	 * Set the default value, used if no value is set by the command-line
 	 * configuration.
@@ -51,27 +78,24 @@ implements Parameter<T> {
 	 * @param defaultValue the default value
 	 * @return this
 	 */
-	protected SimpleParameter setDefaultValue(T defaultValue) {
+	protected E setDefaultValue(T defaultValue) {
 		this.hasDefaultValue = true;
 		this.defaultValue = defaultValue;
 
-		return this;
+		return getThis();
 	}
 
 	@Override
 	public String getUsage() {
 		String option = "--" + name + " " + name.toUpperCase();
 
-		return hasDefaultValue ? "[" + option + "]" : option;
-	}
-
-	@Override
-	public boolean isHidden() {
-		return name.startsWith("__");
+		return isOptional ? "[" + option + "]" : option;
 	}
 
 	@Override
 	public T getValue() {
 		return value;
 	}
+
+	protected abstract E getThis();
 }

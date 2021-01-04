@@ -25,6 +25,9 @@ import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.client.program.ProgramParametrizationException;
 import org.apache.flink.graph.drivers.AdamicAdar;
+import org.apache.flink.graph.drivers.AllPairsDistance;
+import org.apache.flink.graph.drivers.AllPairsShortestPaths;
+import org.apache.flink.graph.drivers.BetweennessCentrality;
 import org.apache.flink.graph.drivers.ClusteringCoefficient;
 import org.apache.flink.graph.drivers.ConnectedComponents;
 import org.apache.flink.graph.drivers.Driver;
@@ -32,6 +35,7 @@ import org.apache.flink.graph.drivers.EdgeList;
 import org.apache.flink.graph.drivers.GraphMetrics;
 import org.apache.flink.graph.drivers.HITS;
 import org.apache.flink.graph.drivers.JaccardIndex;
+import org.apache.flink.graph.drivers.KatzCentrality;
 import org.apache.flink.graph.drivers.PageRank;
 import org.apache.flink.graph.drivers.TriangleListing;
 import org.apache.flink.graph.drivers.input.CirculantGraph;
@@ -46,9 +50,7 @@ import org.apache.flink.graph.drivers.input.PathGraph;
 import org.apache.flink.graph.drivers.input.RMatGraph;
 import org.apache.flink.graph.drivers.input.SingletonEdgeGraph;
 import org.apache.flink.graph.drivers.input.StarGraph;
-import org.apache.flink.graph.drivers.output.Hash;
 import org.apache.flink.graph.drivers.output.Output;
-import org.apache.flink.graph.drivers.output.Print;
 import org.apache.flink.graph.drivers.parameter.BooleanParameter;
 import org.apache.flink.graph.drivers.parameter.Parameterized;
 import org.apache.flink.graph.drivers.parameter.ParameterizedBase;
@@ -58,10 +60,9 @@ import org.apache.flink.graph.drivers.transform.Transformable;
 import org.apache.flink.runtime.util.EnvironmentInformation;
 import org.apache.flink.util.InstantiationUtil;
 
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.core.JsonEncoding;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.core.JsonFactory;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.core.JsonGenerator;
-
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.commons.lang3.text.StrBuilder;
 
 import java.io.File;
@@ -81,9 +82,6 @@ import java.util.Map;
  * <p>Inputs and algorithms are decoupled by, respectively, producing and
  * consuming a graph. Currently only {@code Graph} is supported but later
  * updates may add support for new graph types such as {@code BipartiteGraph}.
- *
- * <p>Algorithms must explicitly support each type of output via implementation of
- * interfaces. This is scalable as the number of outputs is small and finite.
  */
 public class Runner
 extends ParameterizedBase {
@@ -91,8 +89,6 @@ extends ParameterizedBase {
 	private static final String INPUT = "input";
 
 	private static final String ALGORITHM = "algorithm";
-
-	private static final String OUTPUT = "output";
 
 	private static ParameterizedFactory<Input> inputFactory = new ParameterizedFactory<Input>()
 		.addClass(CirculantGraph.class)
@@ -110,19 +106,18 @@ extends ParameterizedBase {
 
 	private static ParameterizedFactory<Driver> driverFactory = new ParameterizedFactory<Driver>()
 		.addClass(AdamicAdar.class)
+		.addClass(AllPairsDistance.class)
+		.addClass(AllPairsShortestPaths.class)
+		.addClass(BetweennessCentrality.class)
 		.addClass(ClusteringCoefficient.class)
 		.addClass(ConnectedComponents.class)
 		.addClass(EdgeList.class)
 		.addClass(GraphMetrics.class)
 		.addClass(HITS.class)
 		.addClass(JaccardIndex.class)
+		.addClass(KatzCentrality.class)
 		.addClass(PageRank.class)
 		.addClass(TriangleListing.class);
-
-	private static ParameterizedFactory<Output> outputFactory = new ParameterizedFactory<Output>()
-		.addClass(org.apache.flink.graph.drivers.output.CSV.class)
-		.addClass(Hash.class)
-		.addClass(Print.class);
 
 	// parameters
 
@@ -146,7 +141,7 @@ extends ParameterizedBase {
 
 	private Driver algorithm;
 
-	private Output output;
+	private Output output = new Output();
 
 	/**
 	 * Create an algorithm runner from the given arguments.
@@ -226,7 +221,7 @@ extends ParameterizedBase {
 			.appendNewLine()
 			.append("usage: flink run examples/flink-gelly-examples_<version>.jar --algorithm ")
 			.append(algorithmName)
-			.append(" [algorithm options] --input <input> [input options] --output <output> [output options]")
+			.append(" [algorithm options] --input <input> [input options] [output options]")
 			.appendNewLine()
 			.appendNewLine()
 			.appendln("Available inputs:");
@@ -247,18 +242,6 @@ extends ParameterizedBase {
 				.appendln("Algorithm configuration:")
 				.append("  ")
 				.appendln(algorithm.getUsage());
-		}
-
-		strBuilder
-			.appendNewLine()
-			.appendln("Available outputs:");
-
-		for (Output output : outputFactory) {
-			strBuilder
-				.append("  --output ")
-				.append(output.getName())
-				.append(" ")
-				.appendln(output.getUsage());
 		}
 
 		return strBuilder
@@ -333,11 +316,7 @@ extends ParameterizedBase {
 
 		// input and usage
 		if (!parameters.has(INPUT)) {
-			if (!parameters.has(OUTPUT)) {
-				// if neither input nor output is given then print algorithm usage
-				throw new ProgramParametrizationException(getAlgorithmUsage(algorithmName));
-			}
-			throw new ProgramParametrizationException("No input given");
+			throw new ProgramParametrizationException(getAlgorithmUsage(algorithmName));
 		}
 
 		parameterize(algorithm);
@@ -352,17 +331,6 @@ extends ParameterizedBase {
 		parameterize(input);
 
 		// output and usage
-		if (!parameters.has(OUTPUT)) {
-			throw new ProgramParametrizationException("No output given");
-		}
-
-		String outputName = parameters.get(OUTPUT);
-		output = outputFactory.get(outputName);
-
-		if (output == null) {
-			throw new ProgramParametrizationException("Unknown output type: " + outputName);
-		}
-
 		parameterize(output);
 
 		// ----------------------------------------------------------------------------------------
@@ -406,7 +374,7 @@ extends ParameterizedBase {
 		// Output
 		executionName = jobName.getValue() != null ? jobName.getValue() + ": " : "";
 
-		executionName += input.getIdentity() + " ⇨ " + algorithmName + " ⇨ " + output.getName();
+		executionName += input.getIdentity() + " ⇨ " + algorithmName;
 
 		if (transforms.size() > 0) {
 			// append identifiers to job name
@@ -417,16 +385,6 @@ extends ParameterizedBase {
 			}
 
 			executionName = buffer.append("]").toString();
-		}
-
-		if (output == null) {
-			throw new ProgramParametrizationException("Unknown output type: " + outputName);
-		}
-
-		try {
-			output.configure(parameters);
-		} catch (RuntimeException ex) {
-			throw new ProgramParametrizationException(ex.getMessage());
 		}
 
 		if (result != null) {
@@ -448,18 +406,14 @@ extends ParameterizedBase {
 	 * @throws Exception on error
 	 */
 	private void execute() throws Exception {
-		if (result == null) {
-			env.execute(executionName);
-		} else {
-			output.write(executionName.toString(), System.out, result);
-		}
+		output.write(executionName, System.out, result);
 
-		System.out.println();
-		algorithm.printAnalytics(System.out);
+//		System.out.println();
+//		algorithm.printAnalytics(System.out);
 
-		if (jobDetailsPath.getValue() != null) {
-			writeJobDetails(env, jobDetailsPath.getValue());
-		}
+//		if (jobDetailsPath.getValue() != null) {
+//			writeJobDetails(env, jobDetailsPath.getValue());
+//		}
 	}
 
 	/**

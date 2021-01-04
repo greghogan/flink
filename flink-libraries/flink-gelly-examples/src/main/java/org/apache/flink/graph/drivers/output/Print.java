@@ -20,8 +20,14 @@ package org.apache.flink.graph.drivers.output;
 
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.graph.asm.dataset.Collect;
-import org.apache.flink.graph.asm.result.PrintableResult;
 import org.apache.flink.graph.drivers.parameter.BooleanParameter;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.MapperFeature;
 
 import java.io.PrintStream;
 import java.util.List;
@@ -31,20 +37,23 @@ import java.util.List;
  *
  * @param <T> result Type
  */
-public class Print<T>
-extends OutputBase<T> {
+public class Print<T> {
 
-	private BooleanParameter printExecutionPlan = new BooleanParameter(this, "__print_execution_plan");
-
-	@Override
 	public void write(String executionName, PrintStream out, DataSet<T> data) throws Exception {
+		// json
+//		ObjectMapper mapper = new ObjectMapper();
+//		mapper.registerModule(new Modules.Verbose());
+//		mapper.disable(MapperFeature.DEFAULT_VIEW_INCLUSION);
+//		ObjectWriter writer = mapper.writer();
+
+		// csv
+		CsvMapper mapper = new CsvMapper();
+		mapper.registerModule(new Modules.Concise());
+		CsvSchema schema = mapper.schemaFor(data.getType().getTypeClass())
+			.withLineSeparator("");
+		ObjectWriter writer = mapper.writer(schema);
+
 		Collect<T> collector = new Collect<T>().run(data);
-
-		if (printExecutionPlan.getValue()) {
-			out.println();
-			out.println(data.getExecutionEnvironment().getExecutionPlan());
-		}
-
 		List<T> results = collector.execute(executionName);
 
 		if (results.size() == 0) {
@@ -53,14 +62,12 @@ extends OutputBase<T> {
 
 		out.println();
 
-		if (results.get(0) instanceof PrintableResult) {
+		try {
 			for (Object result : results) {
-				out.println(((PrintableResult) result).toPrintableString());
+				out.println(writer.writeValueAsString(result));
 			}
-		} else {
-			for (Object result : results) {
-				out.println(result);
-			}
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
 		}
 	}
 }

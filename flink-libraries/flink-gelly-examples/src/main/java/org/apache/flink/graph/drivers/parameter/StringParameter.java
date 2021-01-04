@@ -24,7 +24,7 @@ import org.apache.flink.api.java.utils.ParameterTool;
  * A {@link Parameter} storing a {@link String}.
  */
 public class StringParameter
-extends SimpleParameter<String> {
+extends SimpleParameter<String, StringParameter> {
 
 	/**
 	 * Set the parameter name and add this parameter to the list of parameters
@@ -51,5 +51,10 @@ extends SimpleParameter<String> {
 	@Override
 	public String toString() {
 		return value;
+	}
+
+	@Override
+	protected StringParameter getThis() {
+		return this;
 	}
 }

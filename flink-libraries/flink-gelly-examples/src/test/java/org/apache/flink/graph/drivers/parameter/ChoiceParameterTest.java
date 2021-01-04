@@ -49,7 +49,7 @@ extends ParameterTestBase {
 	@Test
 	public void testWithDefaultWithParameter() {
 		parameter.setDefaultValue("default").addChoices("c0", "c1", "c2");
-		Assert.assertEquals("[--choice <default | c0 | c1 | c2>]", parameter.getUsage());
+		Assert.assertEquals("--choice <default | c0 | c1 | c2>", parameter.getUsage());
 
 		parameter.configure(ParameterTool.fromArgs(new String[]{"--choice", "c1"}));
 		Assert.assertEquals("c1", parameter.getValue());
@@ -58,7 +58,7 @@ extends ParameterTestBase {
 	@Test
 	public void testWithDefaultWithoutParameter() {
 		parameter.setDefaultValue("default").addChoices("c0", "c1", "c2");
-		Assert.assertEquals("[--choice <default | c0 | c1 | c2>]", parameter.getUsage());
+		Assert.assertEquals("--choice <default | c0 | c1 | c2>", parameter.getUsage());
 
 		parameter.configure(ParameterTool.fromArgs(new String[]{}));
 		Assert.assertEquals("default", parameter.getValue());

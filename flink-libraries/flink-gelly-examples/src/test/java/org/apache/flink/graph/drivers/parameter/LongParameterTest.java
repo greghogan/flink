@@ -81,7 +81,7 @@ extends ParameterTestBase {
 	@Test
 	public void testWithDefaultWithoutParameter() {
 		parameter.setDefaultValue(13);
-		Assert.assertEquals("[--test TEST]", parameter.getUsage());
+		Assert.assertEquals("--test TEST", parameter.getUsage());
 
 		parameter.configure(ParameterTool.fromArgs(new String[]{}));
 		Assert.assertEquals(new Long(13), parameter.getValue());

@@ -56,7 +56,7 @@ extends ParameterTestBase {
 	@Test
 	public void testWithDefaultWithoutParameter() {
 		parameter.setDefaultValue("Flink");
-		Assert.assertEquals("[--test TEST]", parameter.getUsage());
+		Assert.assertEquals("--test TEST", parameter.getUsage());
 
 		parameter.configure(ParameterTool.fromArgs(new String[]{}));
 		Assert.assertEquals("Flink", parameter.getValue());

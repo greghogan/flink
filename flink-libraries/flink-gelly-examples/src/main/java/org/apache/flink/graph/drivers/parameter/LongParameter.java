@@ -27,7 +27,7 @@ import org.apache.flink.api.java.utils.ParameterTool;
  * <p>Note that the default value may be outside of these bounds.
  */
 public class LongParameter
-extends SimpleParameter<Long> {
+extends SimpleParameter<Long, LongParameter> {
 
 	private boolean hasMinimumValue = false;
 	private long minimumValue;
@@ -126,5 +126,10 @@ extends SimpleParameter<Long> {
 	@Override
 	public String toString() {
 		return Long.toString(value);
+	}
+
+	@Override
+	protected LongParameter getThis() {
+		return this;
 	}
 }
